@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import session from 'express-session';
 import fetch from 'node-fetch';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 const app = express();
 const port = 3000;
@@ -19,9 +20,10 @@ app.use(cors({
   credentials: true, // To support session cookies
 }));
 
-const clientId = '15cad36aafcc4cfeabac345a29046cd9';            // your clientId
-const redirectUrl = 'http://localhost:3000/callback';  // your redirect URL - must be localhost URL and/or HTTPS
-const clientSecret = '95acd96e2bad46dd96d32d33b825faa8';
+dotenv.config();
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const redirectUrl = process.env.REDIRECT_URI;
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -124,7 +126,7 @@ const ensureValidAccessToken = async(req, res, next) => {
         await refreshToken(req);
         return next();
       } catch (error) {
-        console.error('Error refreshing token in ensureValidAccessToken():', error);
+        console.error('Error refreshing token', error);
         return res.status(500).send('Internal Server Error due to token refresh issue');
       }
     } else {
