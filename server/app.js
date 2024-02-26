@@ -105,6 +105,34 @@ async function refreshToken(req) {
   }
 };
 
+// Used in case token expired while user still active (after 30 minute inactivity period they return for example)
+const ensureValidAccessToken = async(req, res, next) => {
+  const accessToken = req.session.access_token;
+  const refreshToken = req.session.refresh_token;
+  const tokenExpiry = req.session.token_expiry ? new Date(req.session.token_expiry) : null;
+  const now = new Date();
+
+  // If token still exists, next
+  if (accessToken && tokenExpiry && now < tokenExpiry) {
+    return next();
+  }
+
+  // If no access token exists, but refresh token exists
+  if (!accessToken || (tokenExpiry && now >= tokenExpiry)) {
+    if (refreshToken) {
+      try {
+        await refreshToken(req);
+        return next();
+      } catch (error) {
+        console.error('Error refreshing token in ensureValidAccessToken():', error);
+        return res.status(500).send('Internal Server Error due to token refresh issue');
+      }
+    } else {
+      return res.status(401).send('Unauthorized: No valid access token or refresh token');
+    }
+  }
+};
+
 // Generate random string for code verifier
 const generateCodeVerifier = () => {
   return crypto.randomBytes(32).toString('hex');
@@ -168,7 +196,6 @@ app.get('/callback', async (req, res) => {
   if (code) {
     try {
       const tokenResponse = await getToken(req, code);
-      console.log(tokenResponse);
 
       // Save token response data to session
       req.session.access_token = tokenResponse.access_token;
@@ -176,6 +203,8 @@ app.get('/callback', async (req, res) => {
       req.session.expires_in = tokenResponse.expires_in;
       req.session.refresh_token = tokenResponse.refresh_token;
       req.session.scope = tokenResponse.scope;
+
+      req.session.isLoggedIn = true;
 
       // Calculate and save the expiry time as an absolute timestamp
       const now = new Date();
@@ -188,6 +217,10 @@ app.get('/callback', async (req, res) => {
       console.error(error);
     }
   }
+});
+
+app.get('/auth/status', ensureValidAccessToken, (req, res) => {
+  res.json({ isLoggedIn: !!req.session.isLoggedIn });
 });
 
 // MY OWN SPOTIFY API WRAPPER
@@ -206,6 +239,17 @@ async function fetchCurrentlyPlaying(req, res, next) {
     }
   });
 
+  if (!response.ok) {
+    const errorMessage = `API call failed with status: ${response.status}`;
+    console.error(errorMessage);
+    return res.status(response.status).send(errorMessage);
+  }
+
+  if (response.status === 204) {
+    console.log('No track currently playing');
+    return res.status(response.status).send('No track currently playing');
+  }
+
   if (response.ok) {
     const rawData = await response.json();
 
@@ -223,17 +267,61 @@ async function fetchCurrentlyPlaying(req, res, next) {
     next(); // Continue to next middleware function - Express allows async operations to complete BEFORE proceeding
   } else {
     const errorData = await response.json();
-    console.error('Failed to fetch currently playing data', errorData);
+    console.error('Failed to fetch currently playing data:', errorData);
     res.status(response.status).send(errorData);
   }
 };
 
-// --------
-app.get('/currently-playing', fetchCurrentlyPlaying, (req, res) => {
+app.get('/currently-playing', ensureValidAccessToken, fetchCurrentlyPlaying,  (req, res) => {
   if (req.currentlyPlaying) {
     res.json(req.currentlyPlaying);
-    console.log(req.session.token_expiry);
   } else {
     res.status(404).send('No track currently playing');
+  }
+});
+
+// Middleware function that interacts with this endpoint: https://api.spotify.com/v1/me
+async function fetchCurrentUser(req, res, next) {
+  if (!req.session.access_token) {
+    return res.status(401).send('Access token is missing');
+  }
+
+  const url = 'https://api.spotify.com/v1/me';
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${req.session.access_token}`
+    }
+  });
+
+  if (!response.ok) {
+    const errorMessage = `API call failed with status: ${response.status}`;
+    console.error(errorMessage);
+    return res.status(response.status).send(errorMessage);
+  }
+
+  if (response.ok) {
+    const rawData = await response.json();
+
+    const data = {
+      display_name: rawData.display_name,
+      external_url: rawData.external_urls,
+      image: rawData.images.length > 0 ? rawData.images[0].url : null,
+    }
+
+    req.currentUser = data;
+    next();
+  } else {
+    const errorData = await response.json();
+    console.error('Failed to fetch current user:', errorData);
+    res.status(response.status).send(errorData);
+  }
+};
+
+app.get('/current-user', ensureValidAccessToken, fetchCurrentUser, (req, res) => {
+  if (req.currentUser) {
+    res.json(req.currentUser);
+  } else {
+    res.status(404).send('No current user');
   }
 });
