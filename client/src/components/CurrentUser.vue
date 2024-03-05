@@ -10,7 +10,6 @@ const fetchCurrentUser = async() => {
     const response = await fetch('http://localhost:3000/current-user', { credentials: 'include'}); // MAKE SURE TO CHECK IF THIS IS PROD
     if (!response.ok) throw new Error('Failed to fetch');
     userInfo.value = await response.json();
-    console.log(userInfo.value);
   } catch (error) {
     console.error(error);
     userInfo.value = null;
