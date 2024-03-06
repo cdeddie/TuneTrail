@@ -211,32 +211,49 @@ async function fetchCurrentlyPlaying(req, res, next) {
   if (response.ok) {
     const rawData = await response.json();
 
-    const albumData = await fetchAlbumTracks(rawData.item.album.id, req);
+    const isLocal = rawData.item.is_local;
 
-    const data = {
-      track: rawData.item.name,
-      artists: rawData.item.artists.map(artist => artist.name),
-      album: rawData.item.album.name,
-      album_id: rawData.item.album.id,
-      album_image_url: rawData.item.album.images[0]?.url,
-      album_release: rawData.item.album.release_date,
-      album_url: rawData.item.album.external_urls.spotify,
-      is_playing: rawData.is_playing,
-      progress_ms: rawData.progress_ms,
-      duration_ms: rawData.item.duration_ms, 
+    if (isLocal) {
+      const data = {
+        track: rawData.item.name,
+        artists: rawData.item.artists.map(artist => artist.name),
+        album: rawData.item.album.name,
+        album_image_url: rawData.item.album.images[0]?.url,
+        progress_ms: rawData.progress_ms,
+        duration_ms: rawData.item.duration_ms,
+        is_local: rawData.item.is_local,
+      };
+      req.currentlyPlaying = data;
+    } else {
+      const albumData = await fetchAlbumTracks(rawData.item.album.id, req);
 
-      tracks: albumData.items.map(track => ({
-        artist_spotify_url: track.artists[0].external_urls.spotify,
-        artists: track.artists.map(artist => artist.name),
-        duration_ms: track.duration_ms,
-        explicit: track.explicit,
-        spotify_url: track.external_urls.spotify,
-        name: track.name,
-        preview_url: track.preview_url,
-      }))
+      const data = {
+        track: rawData.item.name,
+        artists: rawData.item.artists.map(artist => artist.name),
+        album: rawData.item.album.name,
+        album_id: rawData.item.album.id,
+        album_image_url: rawData.item.album.images[0]?.url,
+        album_release: rawData.item.album.release_date,
+        album_url: rawData.item.album.external_urls.spotify,
+        is_playing: rawData.is_playing,
+        progress_ms: rawData.progress_ms,
+        duration_ms: rawData.item.duration_ms, 
+        is_local: rawData.item.is_local,
+
+        tracks: albumData.items.map(track => ({
+          artist_spotify_url: track.artists[0].external_urls.spotify,
+          artists: track.artists.map(artist => artist.name),
+          duration_ms: track.duration_ms,
+          explicit: track.explicit,
+          spotify_url: track.external_urls.spotify,
+          name: track.name,
+          preview_url: track.preview_url,
+        }))
+      };
+
+      req.currentlyPlaying = data;
     }
-
-    req.currentlyPlaying = data;
+    
     next(); // Continue to next middleware function - Express allows async operations to complete BEFORE proceeding
   } else {
     const errorData = await response.json();

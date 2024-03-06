@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import AlbumDisplay from './AlbumDisplay.vue';
+import { useToast } from 'primevue/usetoast';
 
 const currentInfo = ref(null);
 const hasFetched = ref(false);
 const isLoading = ref(false);
 const visible = ref(false);
+const toast = useToast();
 
 const fetchCurrentlyPlaying = async() => {
   isLoading.value = true;
@@ -18,6 +20,9 @@ const fetchCurrentlyPlaying = async() => {
       return;
     }
     currentInfo.value = await response.json();
+    if (currentInfo.value.is_local) {
+      toast.add({ severity: 'warn', summary: 'Local file', detail: 'Local files are not recommended for use with this service' });
+    }
   } catch (error) {
     console.error(error);
     currentInfo.value = null;
@@ -49,6 +54,7 @@ const completionPercentage = computed(() => {
 
 <template>
   <div class="currently-playing-container">
+    <Toast />
     <Button @click="fetchCurrentlyPlaying" rounded>What's Playing?</Button>
 
     <Skeleton class="skeleton" v-if="isLoading" width="20rem" height="1rem"></Skeleton>
@@ -63,8 +69,7 @@ const completionPercentage = computed(() => {
       <p>
         <strong>Album: </strong> 
         <Button label="Show" @click="visible=true" unstyled class="track-info-button">{{ currentInfo.album }}</Button>
-        <Dialog v-model:visible="visible" @hide="visible=false" modal :header="currentInfo.album">
-          <Image :src="currentInfo.album_image_url" :alt="currentInfo.album + ' cover'" width="100"/>
+        <Dialog v-model:visible="visible" @hide="visible=false" modal :header="currentInfo.album" :breakpoints="{'960px':'75vw','640px':'95vw'}">
           <AlbumDisplay :albumInfo="currentInfo"/>
         </Dialog>
       </p>
