@@ -25,6 +25,7 @@ const fetchCurrentUser = async(req, res, next) => {
     const data = {
       display_name: rawData.display_name,
       external_url: rawData.external_urls,
+      spotify_id: rawData.id,
       image: rawData.images.length > 0 ? rawData.images[0].url : null,
     }
 

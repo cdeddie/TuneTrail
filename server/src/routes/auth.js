@@ -2,7 +2,9 @@ import express from 'express';
 import axios from 'axios';
 import querystring from 'querystring';
 import crypto from 'crypto';
+import mysql from 'mysql2/promise';
 import { config } from '../config/index.js';
+import ensureUserExists from '../middleware/ensureUserExists.js';
 
 const { clientId, clientSecret, redirectUri, stateKey, scope } = config;
 
@@ -32,7 +34,7 @@ router.get('/login', (req, res) => {
 });
 
 // Exchange code for access token, requests refresh and access tokens after checking state param
-router.get('/callback', async (req, res) => {
+router.get('/callback', async (req, res, next) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -65,10 +67,19 @@ router.get('/callback', async (req, res) => {
       const access_token = authResponse.data.access_token;
       const refresh_token = authResponse.data.refresh_token;
 
+      const userResponse = await axios({
+        method: 'get',
+        url: 'https://api.spotify.com/v1/me',
+        headers: { 'Authorization': 'Bearer ' + access_token }
+      });
+      // todo: db stuff
+      const spotify_id = userResponse.data.id;
+
       req.session.access_token = access_token;
       req.session.refresh_token = refresh_token;
       req.session.isLoggedIn = true;
       req.session.token_expiry = Date.now() + (authResponse.data.expires_in - 60) * 1000;
+      req.session.spotify_id = spotify_id;
 
       res.redirect('http://localhost:5173/');
     } catch (error) {

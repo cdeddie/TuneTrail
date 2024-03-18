@@ -48,6 +48,7 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
         track: rawData.item.name,
         artists: rawData.item.artists.map(artist => artist.name),
         album: rawData.item.album.name,
+        album_type: rawData.item.album.album_type,
         album_id: rawData.item.album.id,
         album_image_url: rawData.item.album.images[0]?.url,
         album_release: rawData.item.album.release_date,
