@@ -1,9 +1,15 @@
 <script setup>
-import { defineProps } from 'vue';
+import { ref, defineProps } from 'vue';
 
 const props = defineProps({
   albumInfo: Object,
 })
+
+const volume = ref(1);
+
+const updateVolume = (event) => {
+  volume.value = event.target.volume;
+};
 </script>
 
 <template>
@@ -16,7 +22,7 @@ const props = defineProps({
           <p :style="{ fontWeight: 'bold' }">{{ track.name }}</p>
           <p :style="{ fontSize: '12px', fontStyle: 'italic' }">{{  track.artists.join(', ') }}</p>
         </div>
-        <audio controls :src="track.preview_url"></audio>
+        <audio controls :src="track.preview_url" :volume="volume"@volumechange="updateVolume($event)"></audio>
       </div>
     </div>
   </div>

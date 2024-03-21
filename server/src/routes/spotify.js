@@ -14,6 +14,7 @@ router.get('/currently-playing', refreshTokenIfNeeded, fetchCurrentlyPlaying,  (
 });
 
 router.get('/current-user', refreshTokenIfNeeded, fetchCurrentUser, (req, res) => {
+  console.log('Getting current user');
   if (req.currentUser) {
     res.json(req.currentUser);
   } else {

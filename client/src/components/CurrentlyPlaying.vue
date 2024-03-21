@@ -9,6 +9,7 @@ const isLoading = ref(false);
 const visible = ref(false);
 const toast = useToast();
 
+
 const fetchCurrentlyPlaying = async() => {
   isLoading.value = true;
   hasFetched.value = true;
@@ -55,7 +56,7 @@ const completionPercentage = computed(() => {
 <template>
   <div class="currently-playing-container">
     <Toast />
-    <Button @click="fetchCurrentlyPlaying" rounded>What's Playing?</Button>
+    <Button @click="fetchCurrentlyPlaying" rounded class="currently-playing-button">What's Playing?</Button>
 
     <Skeleton class="skeleton" v-if="isLoading" width="20rem" height="1rem"></Skeleton>
     <Skeleton class="skeleton" v-if="isLoading" width="20rem" height="1rem"></Skeleton>
@@ -109,5 +110,13 @@ const completionPercentage = computed(() => {
 .track-info-button:hover {
   text-decoration: underline;
   color: var(--text-color-secondary);
+}
+
+.currently-playing-button {
+  transition: transform 0.3s ease-in-out;
+}
+
+.currently-playing-button:hover {
+  transform: translateY(-3px);
 }
 </style>

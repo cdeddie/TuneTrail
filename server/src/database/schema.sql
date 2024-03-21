@@ -1,3 +1,9 @@
+/*********************************
+This database is a work in progress and may be integrated later.
+The database is designed to store user data, song data, album data, and ratings.
+Primarily, the database is designed to store user ratings of songs.
+**********************************/
+
 CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     spotify_id VARCHAR(255) UNIQUE NOT NULL,

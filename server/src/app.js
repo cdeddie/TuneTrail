@@ -18,7 +18,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: config.corsOrigin,
+  origin: true,
   credentials: true, // To support session cookies
 }));
 

@@ -4,7 +4,6 @@ import querystring from 'querystring';
 import crypto from 'crypto';
 import mysql from 'mysql2/promise';
 import { config } from '../config/index.js';
-import ensureUserExists from '../middleware/ensureUserExists.js';
 
 const { clientId, clientSecret, redirectUri, stateKey, scope } = config;
 
@@ -72,7 +71,6 @@ router.get('/callback', async (req, res, next) => {
         url: 'https://api.spotify.com/v1/me',
         headers: { 'Authorization': 'Bearer ' + access_token }
       });
-      // todo: db stuff
       const spotify_id = userResponse.data.id;
 
       req.session.access_token = access_token;
@@ -120,6 +118,19 @@ router.get('/refresh_token', function(req, res) {
 
 router.get('/status', (req, res) => {
   res.json({ isLoggedIn: !!req.session.isLoggedIn });
+});
+
+router.get('/logout', (req, res) => {
+  console.log('starting logout');
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error during logout:', err.message);
+      res.status(500).send('Error during logout');
+    }
+    console.log('logged out');
+    res.status(200).send('Logged out');
+    //res.redirect('localhost:5173/'); // PROD CHECK
+  })
 });
 
 export default router;
