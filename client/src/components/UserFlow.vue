@@ -88,7 +88,8 @@ watchEffect(() => {
     <Button v-if="!isLoggedIn" @click="redirectToSpotifyLogin" rounded><b>Sign in with Spotify</b></Button>
 
     <div v-else class="user-info-manage">
-      <img class="user-image" :src="userInfo?.image" :alt="userInfo?.display_name" />
+      <img v-if="userInfo?.image" class="user-image" :src="userInfo?.image" :alt="userInfo?.display_name" />
+      <i v-else class="pi pi-user"></i>
       <span @click="toggle">{{ userInfo?.display_name }}</span>
       <Menu ref="menu" :model="items" :popup="true"></Menu>
     </div>
@@ -137,5 +138,10 @@ Button:hover {
   height: 30px;
   margin-right: 6px;
   border: 3px solid rgba(122, 120, 120, 0.374);
+}
+
+.pi-user {
+  font-size: 16px;
+  margin-right: 6px;
 }
 </style>

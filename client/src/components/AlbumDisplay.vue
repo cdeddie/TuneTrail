@@ -6,10 +6,18 @@ const props = defineProps({
 })
 
 const volume = ref(1);
+const currentlyPlaying = ref(null);
 
 const updateVolume = (event) => {
   volume.value = event.target.volume;
 };
+
+const playAudio = (event) => {
+  if (currentlyPlaying.value && currentlyPlaying.value !== event.target) {
+    currentlyPlaying.value.pause();
+  }
+  currentlyPlaying.value = event.target;
+}
 </script>
 
 <template>
@@ -22,7 +30,7 @@ const updateVolume = (event) => {
           <p :style="{ fontWeight: 'bold' }">{{ track.name }}</p>
           <p :style="{ fontSize: '12px', fontStyle: 'italic' }">{{  track.artists.join(', ') }}</p>
         </div>
-        <audio controls :src="track.preview_url" :volume="volume"@volumechange="updateVolume($event)"></audio>
+        <audio controls :src="track.preview_url" :volume="volume" @volumechange="updateVolume($event)" @play="playAudio"></audio>
       </div>
     </div>
   </div>

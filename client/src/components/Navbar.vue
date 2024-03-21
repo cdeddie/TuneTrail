@@ -6,8 +6,10 @@ import UserFlow from '../components/UserFlow.vue';
   <nav>
     <ul>
       <li><RouterLink to="/">Home</RouterLink></li>
-      <li><RouterLink to="/about">About</RouterLink></li>
       <li><RouterLink to="/currently-playing">Currently Playing</RouterLink></li>
+      <li><RouterLink to="/most-played">Most Played</RouterLink></li>
+      <li><RouterLink to="/recommendation">Recommendations</RouterLink></li>
+      <li><RouterLink to="/about">About</RouterLink></li>
       <li><UserFlow /></li>
     </ul>
 

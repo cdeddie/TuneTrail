@@ -14,7 +14,7 @@ const fetchCurrentUser = async(req, res, next) => {
   });
 
   if (!response.ok) {
-    const errorMessage = `API call failed with status: ${response.status}`;
+    const errorMessage = `Current user call failed with status: ${response.status}`;
     console.error(errorMessage);
     return res.status(response.status).send(errorMessage);
   }

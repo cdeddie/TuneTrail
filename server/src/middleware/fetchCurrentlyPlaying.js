@@ -15,7 +15,7 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
   });
 
   if (!response.ok) {
-    const errorMessage = `https://api.spotify.com/v1/me/player API call failed with status: ${response.status}`;
+    const errorMessage = `Fetch currently playing call failed with status: ${response.status}`;
     console.error(errorMessage);
     return res.status(response.status).send(errorMessage);
   }

@@ -32,20 +32,6 @@ const fetchCurrentlyPlaying = async() => {
   }
 };
 
-const formatMilliseconds = (milliseconds) => {
-  const minutes = Math.floor(milliseconds / 60000);
-  const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-};
-
-const formattedProgress = computed(() => {
-  return formatMilliseconds(currentInfo.value.progress_ms);
-});
-
-const formattedDuration = computed(() => {
-  return formatMilliseconds(currentInfo.value.duration_ms);
-});
-
 const completionPercentage = computed(() => {
   if (!currentInfo.value.duration_ms || !currentInfo.value.progress_ms) return 0;
   return ((currentInfo.value.progress_ms / currentInfo.value.duration_ms) * 100).toFixed(2);
@@ -54,9 +40,11 @@ const completionPercentage = computed(() => {
 </script>
 
 <template>
+  <!-- Styling for background image: -->
+  <!-- :style="currentInfo && currentInfo.album_image_url ? `background-image: url(${currentInfo.album_image_url})` : ''" -->
   <div class="currently-playing-container">
     <Toast />
-    <Button @click="fetchCurrentlyPlaying" rounded class="currently-playing-button">What's Playing?</Button>
+    <Button @click="fetchCurrentlyPlaying" rounded class="currently-playing-button" style="font-weight: bold;">What's Playing?</Button>
 
     <Skeleton class="skeleton" v-if="isLoading" width="20rem" height="1rem"></Skeleton>
     <Skeleton class="skeleton" v-if="isLoading" width="20rem" height="1rem"></Skeleton>
@@ -85,10 +73,21 @@ const completionPercentage = computed(() => {
 </template>
 
 <style scoped>
+.track-info {
+  color: var(--surface-500);
+}
+
 .currently-playing-container, .track-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.currently-playing-container {
+  background-size: contain;
+  background-position: center;
+  position: relative;
+  background-repeat: no-repeat;
 }
 
 .skeleton {
@@ -105,12 +104,34 @@ const completionPercentage = computed(() => {
   color: inherit;
   cursor: pointer;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.track-info-button::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1.5px;
+  background: var(--primary-color);
+  bottom: 0;
+  left: 50%;
+  transition: all 0.5s;
+}
+
+.track-info-button:hover::after {
+  width: 100%;
+  left: 0;
 }
 
 .track-info-button:hover {
-  text-decoration: underline;
-  color: var(--text-color-secondary);
+  color: var(--primary-color);
 }
+
+
 
 .currently-playing-button {
   transition: transform 0.3s ease-in-out;

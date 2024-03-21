@@ -10,7 +10,7 @@ const fetchAlbumTracks = async(album_id, req) => {
   });
 
   if (!response.ok) {
-    const errorMessage = `https://api.spotify.com/v1/albums/id/tracks API call failed with status: ${response.status}`;
+    const errorMessage = `Fetch album tracks call failed with status: ${response.status}`;
     console.error(errorMessage);
     return null;
   }

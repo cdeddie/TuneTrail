@@ -8,7 +8,7 @@ export const config = {
   clientSecret: process.env.CLIENT_SECRET,
   redirectUri: process.env.REDIRECT_URI,
   stateKey: 'spotify_auth_state',
-  scope: 'user-read-private user-read-email user-read-playback-state user-read-currently-playing',
+  scope: 'user-read-private user-read-email user-read-playback-state user-read-currently-playing user-top-read',
   sessionSecret: process.env.SESSION_SECRET,
   corsOrigin: 'http://localhost:5173',
 };
