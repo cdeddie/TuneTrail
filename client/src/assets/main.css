@@ -1,3 +1,9 @@
 body {
     font-family: var(-font--family);
 }
+
+.gradient-text {
+    background: linear-gradient(to right, var(--primary-color), #2BC4E9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }

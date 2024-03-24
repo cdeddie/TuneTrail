@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 // Allowed values: "album", "artist", "playlist", "track", "show", "episode", "audiobook"
 const fetchSearch = async (req, res) => {
   const { query, type } = req.query;
-  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=AU&limit=5`;
+  const url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&market=AU&limit=10`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {

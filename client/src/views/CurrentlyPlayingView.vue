@@ -1,10 +1,25 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import CurrentlyPlaying from '../components/CurrentlyPlaying.vue';
+import RequiresLogin from '../components/RequiresLogin.vue';
+
+const isLoggedIn = ref(false);
+
+onMounted(async () => {
+  const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
+  const data = await response.json();
+  isLoggedIn.value = data.isLoggedIn;
+});
 </script>
 
 <template>
   <div><span class="title">Currently Playing</span></div>
-  <CurrentlyPlaying />
+  <div v-if="!isLoggedIn">
+    <RequiresLogin :loginMessage="'view what you are currently playing'" />
+  </div>
+  <div v-else>
+    <CurrentlyPlaying />
+  </div>
 
 </template>
 

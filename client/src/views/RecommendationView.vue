@@ -1,6 +1,7 @@
 <script setup>
 import Recommendation from '../components/Recommendation.vue';
 import SearchSpotify from '../components/SearchSpotify.vue';
+// TODO: mobile view (recommendation sliders dropdown in mobile)
 </script>
 
 <template>
@@ -11,11 +12,13 @@ import SearchSpotify from '../components/SearchSpotify.vue';
   </div>
 </template>
 
-<style scoped>
+<style scoped> 
 .root {
   margin-left: 15vh;
   margin-right: 15vh;
 
+
+  border: 1px solid white;
   display: flex;
   flex-direction: row;
 }

@@ -24,6 +24,7 @@ router.get('/current-user', refreshTokenIfNeeded, fetchCurrentUser, (req, res) =
   }
 });
 
+// params included like /spotify/search?query=kanye&type=artist
 router.get('/search', refreshTokenIfNeeded, fetchSearch, (req, res) => {
   if (req.searchResults) {
     res.json(req.searchResults);

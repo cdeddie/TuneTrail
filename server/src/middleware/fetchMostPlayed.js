@@ -30,7 +30,6 @@ const fetchMostPlayed = async(req, res, next) => {
         });
 
         const responses = await Promise.all(fetchPromises);
-        console.log(responses);
 
         const aggregatedData = { artists: {}, tracks: {} };
 
@@ -41,6 +40,14 @@ const fetchMostPlayed = async(req, res, next) => {
             const timeRange = timeRanges[timeRangeIndex];
             aggregatedData[type][timeRange] = response.items;
         });
+
+        // removing available_markets from tracks
+        Object.keys(aggregatedData.tracks).forEach(timeRange => {
+          aggregatedData.tracks[timeRange].forEach(track => {
+              delete track.available_markets;
+              delete track.album.available_markets;
+          });
+      });
 
         req.aggregatedData = aggregatedData;
         next();

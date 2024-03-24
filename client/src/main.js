@@ -18,6 +18,9 @@ import Divider from 'primevue/divider';
 import Menu from 'primevue/menu';
 import Slider from 'primevue/slider';
 import SelectButton from 'primevue/selectbutton';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import ProgressSpinner from 'primevue/progressspinner';
 
 import HomeView from './views/HomeView.vue'
 import AboutView from './views/AboutView.vue'
@@ -53,5 +56,8 @@ app.component('Divider', Divider);
 app.component('Menu', Menu);
 app.component('Slider', Slider);
 app.component('SelectButton', SelectButton);
+app.component('TabView', TabView);
+app.component('TabPanel', TabPanel);
+app.component('ProgressSpinner', ProgressSpinner);
 
 app.mount('#app');
