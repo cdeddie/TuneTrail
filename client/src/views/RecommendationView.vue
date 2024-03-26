@@ -18,7 +18,6 @@ import SearchSpotify from '../components/SearchSpotify.vue';
   margin-right: 15vh;
 
 
-  border: 1px solid white;
   display: flex;
   flex-direction: row;
 }

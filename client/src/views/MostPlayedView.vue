@@ -14,7 +14,6 @@ onMounted(async () => {
   const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
-  console.log(isLoggedIn.value);
   if (isLoggedIn.value === true) {
     await fetchData();
   }

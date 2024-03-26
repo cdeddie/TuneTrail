@@ -19,7 +19,6 @@ const fetchSearch = async (req, res) => {
 
   if (response.ok) {
     const rawData = await response.json();
-    console.log(rawData);
     res.json(rawData);
   } else {
     const errorData = await response.json();
