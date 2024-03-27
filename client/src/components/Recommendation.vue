@@ -92,6 +92,7 @@ watchEffect(() => {
 .recommendation-container {
   min-width: 300px;
   max-width: 300px;
+  max-height: 625px;
   background-color: #282c34;
   border-radius: 16px;
   padding: 20px;

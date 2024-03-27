@@ -117,6 +117,14 @@ watch(value, () => {
 </template>
 
 <style scoped>
+.input-container {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  padding-right: 10px;
+  max-height: 200px;
+}
+
 .input-bar {
   width: 87%;
   background: none;
@@ -126,8 +134,14 @@ watch(value, () => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  font-size: 24px;
-  
+  font-size: 20px;
+  max-height: 5%;
+  margin-top: auto;
+}
+
+.p-selectbutton {
+  max-width: 85px;
+  margin-left: auto;
 }
 
 .search-bar {
@@ -191,13 +205,6 @@ watch(value, () => {
 
 .tag-container i:hover {
   cursor: pointer;
-}
-
-.input-container {
-  width: 100%;
-  position: relative;
-  display: inline-block;
-  padding-right: 10px;
 }
 
 .search-results-dropdown {
