@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, defineEmits, watch } from 'vue';
 import debounce from 'debounce';
 
 // SelectButton
@@ -11,6 +11,12 @@ const showDropdown = ref(false);
 const query = ref('');
 const searchResults = ref(null);
 const isLoading = ref(true);
+
+const emit =  defineEmits(['updateTags']);
+
+watch(tags, () => {
+  emit('updateTags', tags.value);
+}, { deep: true });
 
 const fetchSearch = async() => {
   try {

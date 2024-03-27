@@ -10,6 +10,8 @@ import spotifyRoutes from './routes/spotify.js';
 
 const app = express();
 
+app.use(express.json());
+
 app.use(session({
   secret: config.sessionSecret,
   resave: false,

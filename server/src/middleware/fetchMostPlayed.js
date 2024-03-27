@@ -52,8 +52,8 @@ const fetchMostPlayed = async(req, res, next) => {
         req.aggregatedData = aggregatedData;
         next();
     } catch (error) {
-        console.error('Error fetching user top data:', error);
-        throw error;
+      console.error('Error fetching user top data:', error);
+      throw error;
     }
 };
 

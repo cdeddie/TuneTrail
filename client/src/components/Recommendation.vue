@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits, watchEffect } from 'vue';
 
 const acousticness = ref(0);
 const danceability = ref(0);
@@ -11,6 +11,25 @@ const popularity = ref(0);
 const speechiness = ref(0);
 const tempo = ref(0); //50-200
 const valence = ref(0);
+
+const emit = defineEmits(['updateValues']);
+
+watchEffect(() => {
+  const values = {
+    acousticness: acousticness.value,
+    danceability: danceability.value,
+    energy: energy.value,
+    instrumentalness: instrumentalness.value,
+    liveness: liveness.value,
+    loudness: loudness.value,
+    popularity: popularity.value,
+    speechiness: speechiness.value,
+    tempo: tempo.value,
+    valence: valence.value,
+  };
+
+  emit('updateValues', values);
+});
 </script>
 
 <template>

@@ -4,6 +4,7 @@ import fetchCurrentlyPlaying from '../middleware/fetchCurrentlyPlaying.js';
 import fetchCurrentUser from '../middleware/fetchCurrentUser.js';
 import fetchSearch from '../middleware/fetchSearch.js';
 import fetchMostPlayed from '../middleware/fetchMostPlayed.js';
+import fetchRecommendations from '../middleware/fetchRecommendations.js'
 
 const router = express.Router();
 
@@ -39,6 +40,15 @@ router.get('/top', refreshTokenIfNeeded, fetchMostPlayed, (req, res) => {
   } else {
     console.log(res.body);
     res.status(404).send('No top tracks or artists');
+  }
+});
+
+router.get('/recommendations', refreshTokenIfNeeded, fetchRecommendations, (req, res) => {
+  if (req.rawData) {
+    res.status(200).json(req.rawData);
+  } else {
+    console.log(res.body);
+    res.status(404).send('No recommendations');
   }
 });
 
