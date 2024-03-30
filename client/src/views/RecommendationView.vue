@@ -1,15 +1,17 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import debounce from 'debounce';
 import Recommendation from '../components/Recommendation.vue';
 import SearchSpotify from '../components/SearchSpotify.vue';
+import RequiresLogin from '../components/RequiresLogin.vue';
 // TODO: mobile view (recommendation sliders dropdown in mobile)
 
 const recObject = ref(null);
-const tagObject = ref(null);
+const tagObject = ref([]);
 
 const responseData = ref(null);
 const isLoading = ref(false);
+const isLoggedIn = ref(false);
 
 const handleRecs = (values) => {
   recObject.value = values;
@@ -18,6 +20,12 @@ const handleRecs = (values) => {
 const handleTags = (tags) => {
   tagObject.value = tags;
 };
+
+onMounted(async () => {
+  const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
+  const data = await response.json();
+  isLoggedIn.value = data.isLoggedIn;
+});
 
 const filteredData = computed(() => {
   if (responseData.value) {
@@ -35,6 +43,10 @@ const filteredData = computed(() => {
 
 const fetchRecommendations = async () => {
   isLoading.value = true;
+
+  if (tagObject.value.length === 0) {
+    return;
+  }
 
   try {
     const tags = encodeURIComponent(JSON.stringify(tagObject.value.map(tag => tag.id)));
@@ -59,21 +71,25 @@ const fetchRecommendations = async () => {
   }
 };
 
-// strange bug -> does not fetch upon tagObject modification after all tags are removed
-// also, does not call fetch on track tags
 watch([tagObject], ([newValTag]) => {
-  if (newValTag && newValTag.length > 0) {
-    fetchRecommendations();
-  }
-});
+  if (newValTag.length === 0) {
+    responseData.value = null;
+  } 
+  fetchRecommendations();
+}, { deep: true });
 
 watch(recObject, debounce(fetchRecommendations, 500));
 // Don't forget weird thing with thinking tags still exist after deleting the tags
 </script>
 
 <template>
-  <div><span class="title">Get Recommendations</span></div>
-  <div class="root">
+  <div><span class="title gradient-text">Discover Songs</span></div>
+  <div v-if="!isLoggedIn">
+    <RequiresLogin :loginMessage="'find recommendations'" />
+    <!-- style="display: flex; flex-direction: column; align-items: center; margin-left: auto; margin-right: auto; -->
+  </div>
+
+  <div v-else class="root">
     <div class="left-container">
       <SearchSpotify @updateTags="handleTags"/>
       <div class="result-container">
@@ -95,11 +111,8 @@ watch(recObject, debounce(fetchRecommendations, 500));
         </a>
       </div>
     </div>
-    <Recommendation @updateValues="handleRecs" style="margin-left: 1%;"/>
+    <Recommendation @updateValues="handleRecs" />
   </div>
-  <div>{{ recObject }}</div>
-  <div>{{ tagObject }}</div>
-  <pre v-if="responseData">{{ filteredData }}</pre>
 </template>
 
 <style scoped> 
@@ -118,20 +131,17 @@ watch(recObject, debounce(fetchRecommendations, 500));
 .title {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 25px;
-  font-size: 52px; 
+  text-align: center;
+  margin-bottom: 5vh;
+  font-size: 3em; 
   font-weight: bold;
-  background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .tag-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 5px;
+  padding: 10px ;
   text-decoration: none;
   color: inherit;
 }
@@ -141,6 +151,7 @@ watch(recObject, debounce(fetchRecommendations, 500));
 }
 
 .play-icon {
+  padding-left: 15px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -191,5 +202,25 @@ img {
 
 a:hover {
   background-color: var(--surface-100);
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 2.6em;
+  }
+
+  .root {
+    margin: 0;
+    flex-direction: column;
+  }
+
+  .recommendation-container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .left-container {
+    margin-left: 1vh;
+  }
 }
 </style>

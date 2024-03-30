@@ -14,6 +14,7 @@ import Navbar from './components/Navbar.vue';
 .app-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 </style>

@@ -41,7 +41,7 @@ const fetchData = async() => {
 </script>
 
 <template>
-  <div><span class="title">Most Played</span></div>
+  <div><span class="title gradient-text">Most Played</span></div>
   <div v-if="!isLoggedIn">
     <RequiresLogin :loginMessage="'view your most played tracks and artists'" />
   </div>
@@ -57,35 +57,49 @@ const fetchData = async() => {
 </template>
 
 <style scoped>
-.time-button {
-  margin: 10px;
-  background: none;
-  outline: none;
-}
-
 .title {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 25px;
-  font-size: 52px; 
+  text-align: center;
+  margin-bottom: 5vh;
+  font-size: 3em; 
   font-weight: bold;
-  background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .most-played-container {
   margin-right: auto;
   margin-left: auto;
-  width: 75%;
-  max-width: 850px;
-  min-width: 400px;
+  width: 45%;
+  min-width: 40%;
 
   display: flex;
   flex-direction: column;
   border: 1px solid white;
   border-radius: 5px;
 }
+
+@media (max-width: 1350px) {
+  .most-played-container {
+    width: 60%;
+    min-width: 45%;
+  }
+}
+
+@media (max-width: 750px) {
+  .most-played-container {
+    width: 80%; 
+    min-width: 60%;
+  }
+}
+
+@media (max-width: 600px) {
+  .most-played-container {
+    border: none;
+    width: 100%; 
+    min-width: 95%;
+  }
+}
+
 
 </style>

@@ -19,15 +19,44 @@
 }
 
 .title {
-  font-size: 86px; 
+  font-size: 7em; 
   font-weight: bold;
-  background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+
+	background: linear-gradient(90deg, #30a3cd, #23d579);
+	background-size: 300%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	animation: animate 5s ease-in-out infinite;
+	text-align: center;
+	line-height: 0.9;
+}
+
+@keyframes animate{
+  0%{
+    background-position: 0 50%;
+  }
+  50%{
+    background-position: 100% 50%;
+  }
+  100%{
+    background-position: 0 50%;
+  }
 }
 
 .subtitle {
-  font-size: 24px;
+  margin-top: 1vh;
+  font-size: 1.75em;
   font-weight: 550;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 60px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+  }
 }
 </style>

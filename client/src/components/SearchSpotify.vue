@@ -19,6 +19,10 @@ watch(tags, () => {
 }, { deep: true });
 
 const fetchSearch = async() => {
+  if (query.value.trim().length === 0) {
+    return;
+  }
+
   try {
     const url = `http://localhost:3000/spotify/search?query=${query.value.toLowerCase()}&type=${value.value.toLowerCase().slice(0, -1)}`;
     const response = await fetch(url, { credentials: 'include' });
@@ -122,7 +126,7 @@ watch(value, () => {
   position: relative;
   display: inline-block;
   padding-right: 10px;
-  max-height: 200px;
+  max-height: 30vh;
 }
 
 .input-bar {
@@ -158,6 +162,7 @@ watch(value, () => {
   display: flex;
   gap: 10px;
   padding: 15px;
+  flex-wrap: wrap;
 }
 
 .tag-container {

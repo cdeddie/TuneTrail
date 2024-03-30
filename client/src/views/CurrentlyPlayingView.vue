@@ -13,7 +13,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div><span class="title">Currently Playing</span></div>
+  <div><span class="title gradient-text">Currently Playing</span></div>
   <div v-if="!isLoggedIn">
     <RequiresLogin :loginMessage="'view what you are currently playing'" />
   </div>
@@ -28,11 +28,9 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 25px;
-  font-size: 52px; 
+  text-align: center;
+  margin-bottom: 5vh;
+  font-size: 3em; 
   font-weight: bold;
-  background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 </style>
