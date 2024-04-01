@@ -17,21 +17,20 @@ image (300x300)
 const userInfo = ref(JSON.parse(localStorage.getItem('userInfo')));
 const menu = ref();
 const items = ref([
-    { 
-      label: 'Manage' 
-    },
     {
       label: 'Logout',
-      command: () => {
+      color: 'Red',
+      command: async () => {
         localStorage.clear();
-        fetch('http://localhost:3000/auth/logout', { credentials: 'include' }) // PROD CHECK
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Failed to logout');
-            }
-            location.reload();
-          })
-          .catch((error) => console.error(error));
+        try {
+          const response = await fetch('http://localhost:3000/auth/logout', { credentials: 'include' }); // PROD CHECK
+          if (!response.ok) {
+            throw new Error('Failed to logout');
+          }
+          location.reload();
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
 ]);

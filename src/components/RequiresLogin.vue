@@ -11,7 +11,7 @@ const redirectToLogin = () => {
 </script>
 
 <template>
-  <div class="root">
+  <div class="login-container">
     <div class="gradient-text login">Log In</div>
     <p>To {{ loginMessage }}, you need to login with spotify. TuneTrail never logs or stores any of your data.</p>
     <Button class="login-button" @click="redirectToLogin" rounded><b><i class="fa fa-spotify"></i> Log In</b></Button>
@@ -36,7 +36,7 @@ p {
   max-width: 85%;
 }
 
-.root {
+.login-container {
   background-color: var(--surface-50);
   border-radius: 1vw;
   margin-right: auto;
@@ -58,5 +58,13 @@ p {
 
 .login-button:hover {
   transform: translateY(-0.3vh);
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    width: 90%;
+    max-width: 100%;
+    border-radius: 2vw;
+  }
 }
 </style>

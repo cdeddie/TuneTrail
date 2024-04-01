@@ -90,9 +90,9 @@ watchEffect(() => {
 
 <style scoped>
 .recommendation-container {
-  min-width: 300px;
-  max-width: 300px;
+  width: 350px;
   max-height: 625px;
+  margin-left: 1rem;
   background-color: #282c34;
   border-radius: 16px;
   padding: 20px;
@@ -111,9 +111,20 @@ watchEffect(() => {
 
 .slider-label {
   font-weight: 300;
-  font-size: 17px;
+  font-size: 16px;
   display: inline-block;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 1040px) {
+  .recommendation-container {
+    width: 250px;
+  }
+
+  .slider-label {
+    font-size: 14px;
+  }
+}
+
 
 </style>

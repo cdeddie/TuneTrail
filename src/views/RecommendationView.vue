@@ -51,7 +51,7 @@ const fetchRecommendations = async () => {
   try {
     const tags = encodeURIComponent(JSON.stringify(tagObject.value.map(tag => tag.id)));
     const recTargets = encodeURIComponent(JSON.stringify(recObject.value));
-    const limit = 10;
+    const limit = 25; // TODO implement client manipulation
     const seedType = tagObject.value[0]?.type;
 
     const url = `http://localhost:3000/spotify/recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
@@ -217,10 +217,18 @@ a:hover {
   .recommendation-container {
     margin-left: auto;
     margin-right: auto;
+    width: 80%;
   }
 
   .left-container {
     margin-left: 1vh;
+  }
+}
+
+@media (max-width: 1040px) {
+  .root {
+    margin-left: 5vh;
+    margin-right: 5vh;
   }
 }
 </style>
