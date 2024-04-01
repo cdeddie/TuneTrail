@@ -187,11 +187,6 @@ watch(value, () => {
   to{-webkit-transform:scale(1)}
 }
 
-/* exit animation */
-.remove-tag {
-  
-}
-
 .tag-container img {
   width: 70px;
   height: 70px;

@@ -21,7 +21,6 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
   }
 
   if (response.status === 204) {
-    console.log('No track currently playing');
     return res.status(response.status).send('No track currently playing');
   }
 

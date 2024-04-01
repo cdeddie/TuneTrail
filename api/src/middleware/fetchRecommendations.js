@@ -9,16 +9,18 @@ const fetchRecommendations = async (req, res) => {
   const seedKey = seedType === 'artist' ? 'seed_artists' : 'seed_tracks';
 
   let queryParams = new URLSearchParams({
-    ...(limit && { limit }),
+    limit: limit,
     [seedKey]: tags.join(','),
   });
 
+  // recommendatio targets eg instrumentalness, danceability
   Object.keys(recommendationTargets).forEach(key => {
     if (recommendationTargets[key] > 0) {
       queryParams.append(`target_${key}`, recommendationTargets[key]);
     }
   });
 
+  // example url: https://api.spotify.com/v1/recommendations?limit=25&seed_artists=5K4W6rqBFWDnAN6FQUkS6x&target_energy=40 - %2C represents ,
   const url = `https://api.spotify.com/v1/recommendations?${queryParams}`;
 
   const response = await fetch(url, {

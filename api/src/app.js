@@ -1,5 +1,3 @@
-// TODO: Convert fetch requests to Axios
-
 import express from 'express';
 import session from 'express-session';
 import cookieparser from 'cookie-parser';
@@ -21,7 +19,7 @@ app.use(session({
 
 app.use(cors({
   origin: true,
-  credentials: true, // To support session cookies
+  credentials: true,
 }));
 
 app.use(cookieparser());

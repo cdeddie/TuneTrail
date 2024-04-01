@@ -2,7 +2,6 @@ import express from 'express';
 import axios from 'axios';
 import querystring from 'querystring';
 import crypto from 'crypto';
-import mysql from 'mysql2/promise';
 import { config } from '../config/index.js';
 
 const { clientId, clientSecret, redirectUri, stateKey, scope } = config;
@@ -62,7 +61,6 @@ router.get('/callback', async (req, res, next) => {
 
     try {
       const authResponse = await axios(authOptions);
-      console.log(authResponse.data);
       const access_token = authResponse.data.access_token;
       const refresh_token = authResponse.data.refresh_token;
 
@@ -121,13 +119,11 @@ router.get('/status', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  console.log('starting logout');
   req.session.destroy(err => {
     if (err) {
       console.error('Error during logout:', err.message);
       res.status(500).send('Error during logout');
     }
-    console.log('logged out');
     res.status(200).send('Logged out');
     //res.redirect('localhost:5173/'); // PROD CHECK
   })
