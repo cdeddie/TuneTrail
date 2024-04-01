@@ -1,4 +1,4 @@
-<center>
+<div align="center">
 
 Basically a website to interact with the Spotify API + First website in Vue
 
@@ -7,4 +7,4 @@ Basically a website to interact with the Spotify API + First website in Vue
 
 [https://tunetrail.site/](https://tunetrail.site/)
 
-</center>
+</div>
