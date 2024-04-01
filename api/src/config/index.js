@@ -10,5 +10,4 @@ export const config = {
   stateKey: 'spotify_auth_state',
   scope: 'user-read-private user-read-email user-read-playback-state user-read-currently-playing user-top-read',
   sessionSecret: process.env.SESSION_SECRET,
-  corsOrigin: 'http://localhost:5173',
 };

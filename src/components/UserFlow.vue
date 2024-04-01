@@ -23,7 +23,7 @@ const items = ref([
       command: async () => {
         localStorage.clear();
         try {
-          const response = await fetch('http://localhost:3000/auth/logout', { credentials: 'include' }); // PROD CHECK
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, { credentials: 'include' }); // PROD CHECK
           if (!response.ok) {
             throw new Error('Failed to logout');
           }
@@ -48,7 +48,7 @@ onMounted(async () => {
 
 const checkLoginStatus = async () => {
   try {
-    const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' }); // PROD CHECK
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' }); // PROD CHECK
     const data = await response.json();
     isLoggedIn.value = data.isLoggedIn;
   } catch (error) {
@@ -57,13 +57,13 @@ const checkLoginStatus = async () => {
 };
 
 const redirectToSpotifyLogin = () => {
-  window.location.href = 'http://localhost:3000/auth/login';
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login`;
   checkLoginStatus();
 };
 
 const fetchCurrentUser = async() => {
   try {
-    const response = await fetch('http://localhost:3000/spotify/current-user', { credentials: 'include'}); // MAKE SURE TO CHECK IF THIS IS PROD
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/spotify/current-user`, { credentials: 'include'}); // MAKE SURE TO CHECK IF THIS IS PROD
     if (!response.ok) throw new Error('Failed to fetch');
     userInfo.value = await response.json();
   } catch (error) {

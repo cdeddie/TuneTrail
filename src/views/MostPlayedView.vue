@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-  const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
   if (isLoggedIn.value === true) {
@@ -22,7 +22,7 @@ onMounted(async () => {
 // todo: error checking i.e. display error message to client if fetch fails
 const fetchData = async() => {
   try {
-    const response = await fetch('http://localhost:3000/spotify/top', { credentials: 'include' });
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/spotify/top`, { credentials: 'include' });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -35,7 +35,7 @@ const fetchData = async() => {
   }
 };
 
-// populate an array with http://localhost:3000/spotify/top format of response is:
+// populate an array with api/spotify/top format of response is:
 // {artists: {short_term: [], medium_term: [], long_term: []}, tracks: {short_term: [], medium_term: [], long_term: []}}
 
 </script>

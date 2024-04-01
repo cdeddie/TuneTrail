@@ -24,7 +24,7 @@ const fetchSearch = async() => {
   }
 
   try {
-    const url = `http://localhost:3000/spotify/search?query=${query.value.toLowerCase()}&type=${value.value.toLowerCase().slice(0, -1)}`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search?query=${query.value.toLowerCase()}&type=${value.value.toLowerCase().slice(0, -1)}`;
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) {
       throw new Error('Network response was not ok');

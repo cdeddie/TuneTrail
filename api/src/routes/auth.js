@@ -77,7 +77,11 @@ router.get('/callback', async (req, res, next) => {
       req.session.token_expiry = Date.now() + (authResponse.data.expires_in - 60) * 1000;
       req.session.spotify_id = spotify_id;
 
-      res.redirect('http://localhost:5173/');
+      const baseUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5173'
+        : 'http://54.66.22.64';
+
+      res.redirect(baseUrl);
     } catch (error) {
       console.error('Error during the authentication or data retrieval from Spotify:', error.message);
       res.redirect('/#' +

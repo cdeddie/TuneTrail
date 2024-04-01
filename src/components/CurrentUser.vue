@@ -7,7 +7,7 @@ const isLoading = ref(null);
 const fetchCurrentUser = async() => {
   isLoading.value = true;
   try {
-    const response = await fetch('http://localhost:3000/spotify/current-user', { credentials: 'include'}); // MAKE SURE TO CHECK IF THIS IS PROD
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/spotify/current-user`, { credentials: 'include'}); // MAKE SURE TO CHECK IF THIS IS PROD
     if (!response.ok) throw new Error('Failed to fetch');
     userInfo.value = await response.json();
   } catch (error) {

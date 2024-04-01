@@ -6,7 +6,7 @@ import RequiresLogin from '../components/RequiresLogin.vue';
 const isLoggedIn = ref(false);
 
 onMounted(async () => {
-  const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
 });

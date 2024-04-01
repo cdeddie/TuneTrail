@@ -22,7 +22,7 @@ const handleTags = (tags) => {
 };
 
 onMounted(async () => {
-  const response = await fetch('http://localhost:3000/auth/status', { credentials: 'include' });
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
 });
@@ -54,7 +54,7 @@ const fetchRecommendations = async () => {
     const limit = 25; // TODO implement client manipulation
     const seedType = tagObject.value[0]?.type;
 
-    const url = `http://localhost:3000/spotify/recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
 
     const response = await fetch(url, { credentials: 'include' });
 

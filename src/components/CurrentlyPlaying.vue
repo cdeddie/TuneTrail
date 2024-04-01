@@ -14,7 +14,7 @@ const fetchCurrentlyPlaying = async() => {
   isLoading.value = true;
   hasFetched.value = true;
   try {
-    const response = await fetch('http://localhost:3000/spotify/currently-playing', { credentials: 'include', });
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/spotify/currently-playing`, { credentials: 'include', });
     if (!response.ok) throw new Error('Failed to fetch');
     if (response.status === 204) {
       currentInfo.value = null;

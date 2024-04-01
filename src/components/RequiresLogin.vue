@@ -6,7 +6,7 @@ const props = defineProps({
 });
 
 const redirectToLogin = () => {
-  window.location.href = 'http://localhost:3000/auth/login';
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login`;
 };
 </script>
 
