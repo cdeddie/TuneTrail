@@ -7,6 +7,11 @@
     <div><span class="title">TuneTrail</span></div>
     <div class="subtitle">Utilities for Spotify Users</div>
   </div>
+
+  <div class="bullshit-guidelines-container">
+    <span style="margin-bottom: 7px; margin-left: 3px; font-size: 1rem; font-weight: 700;" class="gradient-text">Powered by</span>
+    <img class ="spotify-img" src="/Spotify_logo_with_text.webp">
+  </div>
 </template>
 
 <style scoped>
@@ -58,5 +63,27 @@
   .subtitle {
     font-size: 20px;
   }
+
+  .bullshit-guidelines-container {
+    max-width: 50vw;
+  }
+
+  .spotify-img {
+    max-width: 50vw;
+  }
+}
+
+.bullshit-guidelines-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: auto;
+  max-width: 12.5vw;
+  margin-top: auto;
+  min-height: 15vh;
+}
+
+.spotify-img {
+  max-width: 15vw;
 }
 </style>

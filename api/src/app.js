@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.js';
 import spotifyRoutes from './routes/spotify.js';
 
 const app = express();
+app.set("trust proxy", true);
 
 app.use(express.json());
 
@@ -27,6 +28,4 @@ app.use(cookieparser());
 app.use('/auth', authRoutes);
 app.use('/spotify', spotifyRoutes);
 
-app.listen(config.port, () => {
-  console.log(`Server running at http://localhost:${config.port}`);
-});
+app.listen(config.port);

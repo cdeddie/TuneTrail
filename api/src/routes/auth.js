@@ -79,7 +79,7 @@ router.get('/callback', async (req, res, next) => {
 
       const baseUrl = process.env.NODE_ENV === 'development'
         ? 'http://localhost:5173'
-        : 'http://54.66.22.64';
+        : 'https://tunetrail.site';
 
       res.redirect(baseUrl);
     } catch (error) {
