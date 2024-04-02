@@ -7,7 +7,7 @@ import authRoutes from './routes/auth.js';
 import spotifyRoutes from './routes/spotify.js';
 
 const app = express();
-<<<<<<< HEAD
+
 app.set("trust proxy", true);
 
 app.use(express.json());
