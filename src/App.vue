@@ -17,7 +17,6 @@ onMounted(() => {
       Unfortunately, this means these services are not available for use at the moment. 
     </div>
   </Dialog>
-
   <div class="app-container">
     <Navbar />
 

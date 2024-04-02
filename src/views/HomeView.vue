@@ -15,6 +15,20 @@
 </template>
 
 <style scoped>
+.bullshit-guidelines-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: auto;
+  max-width: 12.5vw;
+  margin-top: auto;
+  min-height: 15vh;
+}
+
+.spotify-img {
+  max-width: 15vw;
+}
+
 .home-container {
   display: flex;
   flex-direction: column;
