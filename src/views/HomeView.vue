@@ -45,6 +45,7 @@
   padding-left: 8px;
   padding-right: 5px;
   height: 1.6em;
+  min-width: calc(1.6em * 3.6);
 }
 
 @keyframes animate{
