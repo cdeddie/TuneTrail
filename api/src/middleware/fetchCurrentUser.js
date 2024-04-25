@@ -16,6 +16,7 @@ const fetchCurrentUser = async(req, res, next) => {
   if (!response.ok) {
     const errorMessage = `Current user call failed with status: ${response.status}`;
     console.error(errorMessage);
+    console.log(response.body);
     return res.status(response.status).send(errorMessage);
   }
 
