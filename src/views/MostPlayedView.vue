@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, defineProps } from 'vue';
+import { ref, onMounted } from 'vue';
 import MostPlayedList from '../components/MostPlayedList.vue';
 import RequiresLogin from '../components/RequiresLogin.vue';
 

@@ -15,6 +15,9 @@ onMounted(() => {
       Please note that this website is currently in development. 
       To offer you the best experience, I'm in the process of obtaining approval from Spotify for open usage of their API. 
       Unfortunately, this means these services are not available for use at the moment. 
+      <br><br>
+      If you want to use it however, feel free to reach out to me and I can add your Spotify email to the dev dashboard
+      which gives you access! Just navigate to the About page.
     </div>
   </Dialog>
   <div class="app-container">

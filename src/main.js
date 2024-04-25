@@ -2,7 +2,7 @@ import './assets/main.css'
 import 'primeicons/primeicons.css';
 
 import { createApp } from 'vue'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 import App from './App.vue'
 
 import PrimeVue from 'primevue/config'
@@ -38,7 +38,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 });
 

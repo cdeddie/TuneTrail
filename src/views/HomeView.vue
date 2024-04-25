@@ -5,30 +5,11 @@
 <template>
   <div class="home-container">
     <div><span class="title">TuneTrail</span></div>
-    <div class="subtitle">Utilities for Spotify Users</div>
-  </div>
-
-  <div class="bullshit-guidelines-container">
-    <span style="margin-bottom: 7px; margin-left: 3px; font-size: 1rem; font-weight: 700;" class="gradient-text">Powered by</span>
-    <img class ="spotify-img" src="/Spotify_logo_with_text.webp">
+    <div class="subtitle">Utilities for <a href="https://open.spotify.com/" target="_blank"><img class ="spotify-img" src="/Spotify_logo_with_text.webp" alt="Spotify"></a> Users</div>
   </div>
 </template>
 
 <style scoped>
-.bullshit-guidelines-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  margin-left: auto;
-  max-width: 12.5vw;
-  margin-top: auto;
-  min-height: 15vh;
-}
-
-.spotify-img {
-  max-width: 15vw;
-}
-
 .home-container {
   display: flex;
   flex-direction: column;
@@ -51,6 +32,21 @@
 	line-height: 0.9;
 }
 
+.subtitle {
+  margin-top: .25vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.75em;
+  font-weight: 550;
+}
+
+.spotify-img {
+  padding-left: 8px;
+  padding-right: 5px;
+  height: 1.6em;
+}
+
 @keyframes animate{
   0%{
     background-position: 0 50%;
@@ -61,12 +57,6 @@
   100%{
     background-position: 0 50%;
   }
-}
-
-.subtitle {
-  margin-top: 1vh;
-  font-size: 1.75em;
-  font-weight: 550;
 }
 
 @media (max-width: 600px) {

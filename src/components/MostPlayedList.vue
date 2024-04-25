@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, computed } from 'vue';
+import { ref, computed, defineProps } from 'vue';
 
 const props = defineProps({ spotifyData: Object });
 
@@ -35,7 +35,7 @@ const longTermArtistTags = computed(() => {
 
 const shortTermTrackTags = computed(() => {
   return props.spotifyData.tracks.short_term.map(track => ({
-    imageUrl: track.album.images[2].url,
+    imageUrl: track.album.images[1]?.url,
     artistNames: track.artists.map(artist => artist.name).join(', '),
     explicit: track.explicit,
     externalUrl: track.external_urls.spotify,
@@ -109,7 +109,7 @@ const longTermTrackTags = computed(() => {
             </a>
           </TabPanel>
 
-          <TabPanel header="All Time">
+          <TabPanel header="Last 12 Months">
             <a 
               class="tag-container" 
               v-for="(track, index) in longTermTrackTags" 
@@ -171,7 +171,7 @@ const longTermTrackTags = computed(() => {
           </a>
         </TabPanel>
 
-        <TabPanel header="All Time">
+        <TabPanel header="Last 12 Months">
           <a 
             class="tag-container"
             v-for="(artist, index) in longTermArtistTags"

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, watch, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 const userInfo = ref(null);
 const isLoading = ref(null);
