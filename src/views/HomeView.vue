@@ -41,6 +41,11 @@
   font-weight: 550;
 }
 
+.subtitle a
+.subtitle img {
+  display: inline-block;
+}
+
 .spotify-img {
   padding-left: 8px;
   padding-right: 5px;
