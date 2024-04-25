@@ -5,7 +5,7 @@
 <template>
   <div class="home-container">
     <div><span class="title">TuneTrail</span></div>
-    <div class="subtitle">Utilities for <a href="https://open.spotify.com/" target="_blank"><img class ="spotify-img" src="/Spotify_logo_with_text.webp" alt="Spotify"></a> Users</div>
+    <div class="subtitle"><span>Utilities for</span><a href="https://open.spotify.com/" target="_blank"><img class ="spotify-img" src="/Spotify_logo_with_text.webp" alt="Spotify"></a><span>Users</span></div>
   </div>
 </template>
 
@@ -22,14 +22,14 @@
   font-size: 7em; 
   font-weight: bold;
 
-	background: linear-gradient(90deg, #30a3cd, #23d579);
-	background-size: 300%;
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-	animation: animate 5s ease-in-out infinite;
-	text-align: center;
-	line-height: 0.9;
+  background: linear-gradient(90deg, #30a3cd, #23d579);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animate 5s ease-in-out infinite;
+  text-align: center;
+  line-height: 0.9;
 }
 
 .subtitle {
@@ -44,12 +44,13 @@
 .subtitle a
 .subtitle img {
   display: inline-block;
+  max-width: 100%;
 }
 
 .spotify-img {
   padding-left: 8px;
   padding-right: 5px;
-  height: 1.6em;
+  height: 1.7em;
   min-width: calc(1.6em * 3.6);
 }
 
@@ -81,19 +82,5 @@
   .spotify-img {
     max-width: 50vw;
   }
-}
-
-.bullshit-guidelines-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  margin-left: auto;
-  max-width: 12.5vw;
-  margin-top: auto;
-  min-height: 15vh;
-}
-
-.spotify-img {
-  max-width: 15vw;
 }
 </style>
