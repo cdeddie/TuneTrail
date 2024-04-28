@@ -5,7 +5,13 @@
 <template>
   <div class="home-container">
     <div><span class="title">TuneTrail</span></div>
-    <div class="subtitle"><span>Utilities for</span><a href="https://open.spotify.com/" target="_blank"><img class ="spotify-img" src="/Spotify_logo_with_text.webp" alt="Spotify"></a><span>Users</span></div>
+    <div class="subtitle">
+      <span>Utilities for</span>
+      <a href="https://open.spotify.com/" target="_blank">
+        <img class ="spotify-img" src="/Spotify_logo_with_text.webp" alt="Spotify">
+      </a>
+      <span>Users</span>
+    </div>
   </div>
 </template>
 

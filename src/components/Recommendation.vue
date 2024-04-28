@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect, defineEmits } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 const acousticness = ref(0);
 const danceability = ref(0);

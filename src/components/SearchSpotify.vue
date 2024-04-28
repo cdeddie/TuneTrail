@@ -24,7 +24,7 @@ const fetchSearch = async() => {
   }
 
   try {
-    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search?query=${query.value.toLowerCase()}&type=${value.value.toLowerCase().slice(0, -1)}`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search?query=${query.value?.toLowerCase()}&type=${value.value?.toLowerCase().slice(0, -1)}`;
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -82,27 +82,27 @@ watch(value, () => {
         class="input-bar" 
         v-model="query" 
         :placeholder="tags.length >= 5 
-          ? `Maximum number of ${value.toLowerCase()} reached` 
-          : `Search by ${value.toLowerCase().slice(0, -1)}...`" 
+          ? `Maximum number of ${value?.toLowerCase()} reached` 
+          : `Search by ${value?.toLowerCase().slice(0, -1)}...`" 
         type="text" 
         @keyup.enter="fetchSearch" 
         @focus="showDropdown = true" 
         @blur="handleBlur"
         :disabled="tags.length >= 5"
       >
-      <SelectButton v-model="value" :options="options" aria-labelledby="basic" />
+      <SelectButton v-model="value" :options="options" :allowEmpty="false"/>
     </div>
     <div class="divider"></div>
 
     <div class="search-results-dropdown" v-show="showDropdown">
       <div v-if="searchResults && value === 'Artists'" v-for="(artist) in searchResults.artists.items" :key="artist.externalUrl" class="search-results" @click="addTag(artist)">
-        <div v-if="!artist.images[2]?.url" class="alternate-image"></div>
+        <div v-if="!artist.images[2]?.url" class="alternate-image"><i class="fa fa-spotify"></i></div>
         <img v-else :src="artist.images[2]?.url" class="search-image">
         <span>{{ artist.name }}</span>
       </div>
 
       <div v-if="searchResults && value === 'Tracks'" v-for="(track) in searchResults.tracks.items" :key="track.externalUrl" class="search-results" @click="addTag(track)">
-        <div v-if="!track.album.images[2]?.url" class="alternate-image"></div>
+        <div v-if="!track.album.images[2]?.url" class="alternate-image"><i class="fa fa-spotify"></i></div>
         <img v-else :src="track.album.images[2]?.url" class="search-image">
         <span>{{ track.name }} - 
           <span v-for="(artist, index) in track.artists" :key="artist.id">{{ artist.name }}<span v-if="index < track.artists.length - 1">, </span></span>
@@ -237,6 +237,14 @@ watch(value, () => {
   margin-bottom: 2px;
   border-radius: 50%;
   box-shadow: 0px 0px 10px rgba(147, 144, 144, 0.169);
+}
+
+.alternate-image i {
+  width: 40px;
+  height: 40px;
+  font-size: 44px;
+  margin-right: 4px;
+  margin-bottom: 2px;
 }
 
 </style>
