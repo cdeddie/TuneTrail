@@ -1,11 +1,13 @@
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
+import { useViewStore } from '../stores/ViewStore.js';
 import debounce from 'debounce';
 import Recommendation from '../components/Recommendation.vue';
 import SearchSpotify from '../components/SearchSpotify.vue';
 import RequiresLogin from '../components/RequiresLogin.vue';
 // TODO: mobile view (recommendation sliders dropdown in mobile)
 
+const viewStore = useViewStore();
 const recObject = ref(null);
 const tagObject = ref([]);
 
@@ -27,6 +29,7 @@ onMounted(async () => {
   isLoggedIn.value = data.isLoggedIn;
 });
 
+// Here I'm filtering the data on the client side instead of the server side. Probably should have done this throughout the project
 const filteredData = computed(() => {
   if (responseData.value) {
     return responseData.value.tracks.map(track => ({
@@ -44,9 +47,7 @@ const filteredData = computed(() => {
 const fetchRecommendations = async () => {
   isLoading.value = true;
 
-  if (tagObject.value.length === 0) {
-    return;
-  }
+  if (tagObject.value.length === 0) return;
 
   try {
     const tags = encodeURIComponent(JSON.stringify(tagObject.value.map(tag => tag.id)));
@@ -88,9 +89,36 @@ watch(recObject, debounce(fetchRecommendations, 500));
     <!-- style="display: flex; flex-direction: column; align-items: center; margin-left: auto; margin-right: auto; -->
   </div>
 
-  <div v-else class="root">
-    <div class="left-container">
+  <!-- Else if user is logged in: -->
+  <div v-else> 
+    <div v-if="!viewStore.isMobile" class="desktop-view">
+      <div class="left-container">
+        <SearchSpotify @updateTags="handleTags"/>
+        <div class="result-container">
+          <a 
+            class="tag-container" 
+            v-for="(track) in filteredData" 
+            :key="track.externalUrl"
+            :href="track.externalUrl"
+            target="_blank"
+          >
+            <div class="image-container">
+              <img class="tag-image" :src="track.imageUrl"></img>
+              <i class="fa fa-play play-icon" aria-hidden="true"></i>
+              </div> 
+            <div class="track-info">
+              <div class="track-title">{{ track.name }}</div>
+              <div class="track-subtitle">{{ track.artistNames }}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <Recommendation @updateValues="handleRecs" />
+    </div>
+    <!-- If mobile screen -->
+    <div v-else class="mobile-view">
       <SearchSpotify @updateTags="handleTags"/>
+      <Recommendation @updateValues="handleRecs" />
       <div class="result-container">
         <a 
           class="tag-container" 
@@ -102,7 +130,7 @@ watch(recObject, debounce(fetchRecommendations, 500));
           <div class="image-container">
             <img class="tag-image" :src="track.imageUrl"></img>
             <i class="fa fa-play play-icon" aria-hidden="true"></i>
-            </div> 
+          </div> 
           <div class="track-info">
             <div class="track-title">{{ track.name }}</div>
             <div class="track-subtitle">{{ track.artistNames }}</div>
@@ -110,12 +138,11 @@ watch(recObject, debounce(fetchRecommendations, 500));
         </a>
       </div>
     </div>
-    <Recommendation @updateValues="handleRecs" />
   </div>
 </template>
 
 <style scoped> 
-.root {
+.desktop-view {
   margin-left: 15vh;
   margin-right: 15vh;
 
@@ -204,7 +231,7 @@ a:hover {
 }
 
 @media (max-width: 1040px) {
-  .root {
+  .desktop-view {
     margin-left: 5vh;
     margin-right: 5vh;
   }
@@ -215,7 +242,7 @@ a:hover {
     font-size: 2.6em;
   }
 
-  .root {
+  .desktop-view {
     margin: 0;
     flex-direction: column;
   }
@@ -226,8 +253,8 @@ a:hover {
     width: 80%;
   }
 
-  .left-container {
-    margin-left: 1vh;
+  .input-container {
+    margin-left: 7.5px;
   }
 }
 

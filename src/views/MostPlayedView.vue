@@ -101,5 +101,9 @@ const fetchData = async() => {
   }
 }
 
-
+@media (max-width: 400px) {
+  span .p-tabview-title {
+    font-size: 10px;
+  }
+}
 </style>

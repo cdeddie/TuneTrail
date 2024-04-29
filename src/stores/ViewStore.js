@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 export const useViewStore = defineStore('ViewStore', () => {
   const screenWidth = ref(window.innerWidth);
@@ -10,19 +10,16 @@ export const useViewStore = defineStore('ViewStore', () => {
     isMobile.value = window.innerWidth < 700;    // Bool value for mobile/desktop
   };
 
-  const initResize = () => {
+  onMounted(() => {
     window.addEventListener('resize', handleResize);
-  };
+  });
 
-  const destroyResize = () => {
+  onUnmounted(() => {
     window.removeEventListener('resize', handleResize);
-  };
+  });
 
   return {
     screenWidth,
     isMobile,
-    handleResize,
-    initResize,
-    destroyResize
   }
 });

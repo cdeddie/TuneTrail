@@ -1,5 +1,19 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useViewStore } from '../stores/ViewStore.js';
+
+const viewStore = useViewStore();
+
+const headerFontStyles = computed(() => {
+  switch (true) {
+    case viewStore.screenWidth <= 320:
+      return .67;
+    case viewStore.screenWidth <= 375:
+      return .84;
+    case viewStore.screenWidth >= 400:
+      return 1;
+  }
+});
 
 const props = defineProps({ spotifyData: Object });
 
@@ -66,10 +80,10 @@ const longTermTrackTags = computed(() => {
 </script>
 
 <template>
-  <SelectButton v-model="value" :options="options" aria-labelledby="basic" style="margin-left: auto; margin-right: auto;"/><SelectButton />
+  <SelectButton v-model="value" :options="options" aria-labelledby="basic" style="margin-left: auto; margin-right: auto;" :allowEmpty="false" />
     <div v-if="value === 'Tracks'" class="tracks-container">
       <TabView>
-          <TabPanel header="Last Month">
+          <TabPanel header="Last Month" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
             <a 
               class="tag-container" 
               v-for="(track, index) in shortTermTrackTags" 
@@ -89,7 +103,7 @@ const longTermTrackTags = computed(() => {
             </a>
           </TabPanel>
 
-          <TabPanel header="Last 6 Months">
+          <TabPanel header="Last 6 Months" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
             <a 
               class="tag-container" 
               v-for="(track, index) in mediumTermTrackTags" 
@@ -109,7 +123,7 @@ const longTermTrackTags = computed(() => {
             </a>
           </TabPanel>
 
-          <TabPanel header="Last 12 Months">
+          <TabPanel header="Last 12 Months" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
             <a 
               class="tag-container" 
               v-for="(track, index) in longTermTrackTags" 
@@ -133,7 +147,7 @@ const longTermTrackTags = computed(() => {
     
     <div v-else-if="value === 'Artists'" class="artists-container">
       <TabView>
-        <TabPanel header="Last Month">
+        <TabPanel header="Last Month" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
           <a 
             class="tag-container"
             v-for="(artist, index) in shortTermArtistTags"
@@ -152,7 +166,7 @@ const longTermTrackTags = computed(() => {
           </a>
         </TabPanel>
 
-        <TabPanel header="Last 6 Months">
+        <TabPanel header="Last 6 Months" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
           <a 
             class="tag-container"
             v-for="(artist, index) in mediumTermArtistTags"
@@ -171,7 +185,7 @@ const longTermTrackTags = computed(() => {
           </a>
         </TabPanel>
 
-        <TabPanel header="Last 12 Months">
+        <TabPanel header="Last 12 Months" :pt="{ headerTitle: { style: `font-size: ${headerFontStyles}rem;`}}">
           <a 
             class="tag-container"
             v-for="(artist, index) in longTermArtistTags"

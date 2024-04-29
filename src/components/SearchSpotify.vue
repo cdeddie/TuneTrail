@@ -126,7 +126,7 @@ watch(value, () => {
   position: relative;
   display: inline-block;
   padding-right: 10px;
-  max-height: 30vh;
+  max-height: 100vh;
 }
 
 .input-bar {

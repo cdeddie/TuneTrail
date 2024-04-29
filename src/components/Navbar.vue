@@ -21,12 +21,10 @@ const closeMenuNav = () => {
 };
 
 onMounted(() => {
-  viewStore.initResize();
   document.addEventListener('click', closeMenu);
 });
 
 onUnmounted(() => {
-  viewStore.destroyResize();
   document.removeEventListener('click', closeMenu);
 });
 </script>
