@@ -43,7 +43,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.75em;
   font-weight: 550;
 }
 
@@ -57,7 +56,13 @@
   padding-left: 8px;
   padding-right: 5px;
   height: 1.7em;
+  font-size: 1.7em;
   min-width: calc(1.6em * 3.6);
+}
+
+.subtitle span {
+  margin-bottom: 3px;
+  font-size: 1.9em;
 }
 
 @keyframes animate{
@@ -74,11 +79,11 @@
 
 @media (max-width: 600px) {
   .title {
-    font-size: 60px;
+    font-size: 63px;
   }
 
   .subtitle {
-    font-size: 20px;
+    font-size: 10px;
   }
 
   .bullshit-guidelines-container {

@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watchEffect, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import UserFlow from '../components/UserFlow.vue';
+import { useViewStore } from '../stores/ViewStore.js';
 
-const isDesktop = ref(window.innerWidth > 700);
+const viewStore = useViewStore();
 const menuVisible = ref(false);
 
 const toggleMenu = () => {
@@ -19,21 +20,19 @@ const closeMenuNav = () => {
   menuVisible.value = false;
 };
 
-window.addEventListener('resize', () => {
-  isDesktop.value = window.innerWidth > 700;
-});
-
 onMounted(() => {
+  viewStore.initResize();
   document.addEventListener('click', closeMenu);
 });
 
 onUnmounted(() => {
+  viewStore.destroyResize();
   document.removeEventListener('click', closeMenu);
 });
 </script>
 
 <template>
-  <nav v-if="isDesktop" class="desktop-nav">
+  <nav v-if="!viewStore.isMobile" class="desktop-nav">
     <ul>
       <li><RouterLink to="/">Home</RouterLink></li>
       <li><RouterLink to="/currently-playing">Currently Playing</RouterLink></li>

@@ -203,6 +203,13 @@ a:hover {
   background-color: var(--surface-100);
 }
 
+@media (max-width: 1040px) {
+  .root {
+    margin-left: 5vh;
+    margin-right: 5vh;
+  }
+}
+
 @media (max-width: 600px) {
   .title {
     font-size: 2.6em;
@@ -224,10 +231,9 @@ a:hover {
   }
 }
 
-@media (max-width: 1040px) {
-  .root {
-    margin-left: 5vh;
-    margin-right: 5vh;
+@media (max-width: 350px) {
+  .title {
+    font-size: 2.4em;
   }
 }
 </style>

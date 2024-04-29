@@ -1,4 +1,14 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+
+const showComponent = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    showComponent.value = true;
+  }, 100);
+});
+
 const props = defineProps({
   loginMessage: String,
 });
@@ -9,7 +19,7 @@ const redirectToLogin = () => {
 </script>
 
 <template>
-  <div class="login-container">
+  <div v-if="showComponent" class="login-container">
     <div class="gradient-text login">Log In</div>
     <p>To {{ loginMessage }}, you need to login with spotify. TuneTrail never logs or stores any of your data.</p>
     <Button class="login-button" @click="redirectToLogin" rounded><b><i class="fa fa-spotify"></i> Log In</b></Button>
