@@ -130,6 +130,7 @@ watch(value, () => {
 }
 
 .input-bar {
+  font-family: 'Circular', Arial;
   width: 87%;
   background: none;
   outline: none;
@@ -208,8 +209,9 @@ watch(value, () => {
 }
 
 .search-results-dropdown {
+  font-family: 'Circular', Arial;
   position: absolute;
-  width: 100%;
+  width: 99.5%;
   left: 0;
   background-color: var(--surface-50);
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);

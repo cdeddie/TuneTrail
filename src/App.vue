@@ -10,7 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" modal header="Warning" :style="{ maxWidth: '600px', fontSize: '1rem' }">
+  <Dialog v-model:visible="visible" modal header="Warning" :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
     <div style="text-align: center">
       Please note that this website is currently in development. 
       To offer you the best experience, I'm in the process of obtaining approval from Spotify for open usage of their API. 

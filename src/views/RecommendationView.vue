@@ -232,8 +232,8 @@ a:hover {
 
 @media (max-width: 1040px) {
   .desktop-view {
-    margin-left: 5vh;
-    margin-right: 5vh;
+    margin-left: 2vw;
+    margin-right: 3vw;
   }
 }
 
@@ -247,14 +247,15 @@ a:hover {
     flex-direction: column;
   }
 
-  .recommendation-container {
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
+  .input-container {
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+    padding: 0;
+    width: 95%;
   }
 
-  .input-container {
-    margin-left: 7.5px;
+  .result-container {
+    margin-top: 2vh;
   }
 }
 

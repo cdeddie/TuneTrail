@@ -1,105 +1,114 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
+import { useViewStore } from '../stores/ViewStore.js';
 
-const acousticness = ref(0);
-const danceability = ref(0);
-const energy = ref(0);
-const instrumentalness = ref(0);
-const liveness = ref(0);
-const loudness = ref(0);
-const popularity = ref(0);
-const speechiness = ref(0);
-const tempo = ref(0); //50-200
-const valence = ref(0);
+const viewStore = useViewStore();
+
+const sliders = ref([
+  { name: 'acousticness', value: 0 },
+  { name: 'danceability', value: 0 },
+  { name: 'energy', value: 0 },
+  { name: 'instrumentalness', value: 0 },
+  { name: 'liveness', value: 0 },
+  { name: 'loudness', value: 0 },
+  { name: 'popularity', value: 0 },
+  { name: 'speechiness', value: 0 },
+  { name: 'tempo', value: 0 },
+  { name: 'valence', value: 0 },
+]);
 
 const emit = defineEmits(['updateValues']);
 
+// We're looking into this very strongly
 watchEffect(() => {
-  const values = {
-    acousticness: acousticness.value,
-    danceability: danceability.value,
-    energy: energy.value,
-    instrumentalness: instrumentalness.value,
-    liveness: liveness.value,
-    loudness: loudness.value,
-    popularity: popularity.value,
-    speechiness: speechiness.value,
-    tempo: tempo.value,
-    valence: valence.value,
-  };
+  const values = sliders.value.reduce((obj, slider) => {
+    obj[slider.name] = slider.value;
+    return obj;
+  }, {});
 
   emit('updateValues', values);
 });
+
+const showFilters = ref(false);
+
+const toggleFilters = () => {
+  showFilters.value = !showFilters.value;
+};
 </script>
 
 <template>
   <div class="recommendation-container">
-
-    <div class="slider-container">
-      <span class="slider-label">Acousticness: <span class="slider-value">{{ acousticness }}</span></span>
-      <Slider v-model="acousticness" />
+    <span v-if="viewStore.isMobile" class="filter-toggle" @click="toggleFilters">
+      {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+      <i class="pi pi-chevron-down chev" :class="{ 'rotate': showFilters }"></i>
+    </span>
+    <div v-if="viewStore.isMobile" class="slider-dropdown" :class="{ 'open': showFilters }">
+      <div v-for="slider in sliders" :key="slider.name" class="slider-container">
+        <span class="slider-label">
+          {{ slider.name.charAt(0).toUpperCase() + slider.name.slice(1) }}:
+          <span class="slider-value">{{ slider.value }}</span>
+        </span>
+        <Slider v-model="slider.value" />
+      </div>
     </div>
 
-    <div class="slider-container">
-      <span class="slider-label">Danceability: <span class="slider-value">{{ danceability }}</span></span>
-      <Slider v-model="danceability" />
+    <div v-else style="height: fit-content; padding-bottom: 20px;">
+      <div v-for="slider in sliders" :key="slider.name" class="slider-container">
+        <span class="slider-label">
+          {{ slider.name.charAt(0).toUpperCase() + slider.name.slice(1) }}:
+          <span class="slider-value">{{ slider.value }}</span>
+        </span>
+        <Slider v-model="slider.value" />
+      </div>
     </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Energy: <span class="slider-value">{{ energy }}</span></span>
-      <Slider v-model="energy" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Instrumentalness: <span class="slider-value">{{ instrumentalness }}</span></span>
-      <Slider v-model="instrumentalness" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Liveness: <span class="slider-value">{{ liveness }}</span></span>
-      <Slider v-model="liveness" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Loudness: <span class="slider-value">{{ loudness }}</span></span>
-      <Slider v-model="loudness" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Popularity: <span class="slider-value">{{ popularity }}</span></span>
-      <Slider v-model="popularity" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Speechiness: <span class="slider-value">{{ speechiness }}</span></span>
-      <Slider v-model="speechiness" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Tempo: <span class="slider-value">{{ tempo }}</span></span>
-      <Slider v-model="tempo" />
-    </div>
-
-    <div class="slider-container">
-      <span class="slider-label">Valence: <span class="slider-value">{{ valence }}</span></span>
-      <Slider v-model="valence"/>
-    </div>
-
   </div>
 </template>
 
 <style scoped>
 .recommendation-container {
+  font-family: 'Circular', var(--font-family);
   width: 350px;
-  max-height: 625px;
+  height: fit-content;
   margin-left: 1rem;
   background-color: #282c34;
   border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
   box-shadow: 0 8px 16px #7374734f;
+  position: relative;
+}
+
+.filter-toggle {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 20px 20px 0 20px;
+}
+
+.chev {
+  margin-left: auto; 
+  font-size: .8rem;
+  transition: transform 0.4s ease;
+}
+
+.chev.rotate {
+  transform: rotate(180deg);
+}
+
+.slider-dropdown {
+  padding-bottom: 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.slider-dropdown.open {
+  max-height: 1000px;
+}
+
+.slider-container {
+  margin-top: 1px;
+  padding: 0 20px;
 }
 
 .slider-value {
@@ -113,12 +122,13 @@ watchEffect(() => {
   font-weight: 300;
   font-size: 16px;
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
 }
 
 @media (max-width: 1040px) {
   .recommendation-container {
-    width: 250px;
+    width: 25vw;
   }
 
   .slider-label {
@@ -126,5 +136,15 @@ watchEffect(() => {
   }
 }
 
+@media (max-width: 600px) {
+  .recommendation-container {
+    width: 95vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
+  .filter-toggle {
+    height: 2vh;
+  }
+}
 </style>
