@@ -1,53 +1,56 @@
 import express from 'express';
 import refreshTokenIfNeeded from '../middleware/refreshTokenIfNeeded.js';
-import fetchCurrentlyPlaying from '../middleware/fetchCurrentlyPlaying.js';
-import fetchCurrentUser from '../middleware/fetchCurrentUser.js';
-import fetchSearch from '../middleware/fetchSearch.js';
-import fetchMostPlayed from '../middleware/fetchMostPlayed.js';
-import fetchRecommendations from '../middleware/fetchRecommendations.js'
+import fetchCurrentlyPlaying from '../services/fetchCurrentlyPlaying.js';
+import fetchCurrentUser from '../services/fetchCurrentUser.js';
+import fetchSearch from '../services/fetchSearch.js';
+import fetchMostPlayed from '../services/fetchMostPlayed.js';
+import fetchRecommendations from '../services/fetchRecommendations.js'
 
 const router = express.Router();
 
-router.get('/currently-playing', refreshTokenIfNeeded, fetchCurrentlyPlaying,  (req, res) => {
-  if (req.currentlyPlaying) {
-    res.json(req.currentlyPlaying);
-  } else {
-    res.status(404).send('No track currently playing');
+router.get('/currently-playing', refreshTokenIfNeeded, async(req, res) => {
+  try {
+    const response = await fetchCurrentlyPlaying(req);
+    res.json(response);
+  } catch (error) {
+    res.status(error.status || 500).send(error.message);
   }
 });
 
-router.get('/current-user', refreshTokenIfNeeded, fetchCurrentUser, (req, res) => {
-  if (req.currentUser) {
-    res.json(req.currentUser);
-  } else {
-    res.status(404).send('No current user');
+router.get('/current-user', refreshTokenIfNeeded, async(req, res) => {
+  try {
+    const response = await fetchCurrentUser(req);
+    res.json(response);
+  } catch (error) {
+    res.status(error.status || 500).send(error.message);
   }
 });
 
 // params included like /spotify/search?query=kanye&type=artist
-router.get('/search', refreshTokenIfNeeded, fetchSearch, (req, res) => {
-  if (req.searchResults) {
-    res.json(req.searchResults);
-  } else {
-    res.status(404).send('No search results');
+router.get('/search', refreshTokenIfNeeded, async(req, res) => {
+  try {
+    const response = await fetchSearch(req);
+    res.json(response);
+  } catch (error) {
+    res.status(error.status || 500).send(error.message);
   }
 });
 
-router.get('/top', refreshTokenIfNeeded, fetchMostPlayed, (req, res) => {
-  if (req.aggregatedData) {
-    res.status(200).json(req.aggregatedData);
-  } else {
-    console.log(res.body);
-    res.status(404).send('No top tracks or artists');
+router.get('/top', refreshTokenIfNeeded, async(req, res) => {
+  try {
+    const response = await fetchMostPlayed(req, res);
+    res.json(response);
+  } catch (error) {
+    res.status(error.status || 500).send(error.message);
   }
 });
 
-router.get('/recommendations', refreshTokenIfNeeded, fetchRecommendations, (req, res) => {
-  if (req.rawData) {
-    res.status(200).json(req.rawData);
-  } else {
-    console.log(res.body);
-    res.status(404).send('No recommendations');
+router.get('/recommendations', refreshTokenIfNeeded, async (req, res) => {
+  try {
+    const response = await fetchRecommendations(req, res);
+    res.json(response);
+  } catch (error) {
+    res.status(error.status || 500).send(error.message);
   }
 });
 

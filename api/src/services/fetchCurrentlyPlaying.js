@@ -1,30 +1,29 @@
 import fetch from 'node-fetch';
 import fetchAlbumTracks from './fetchAlbumTracks.js';
 
-const fetchCurrentlyPlaying = async(req, res, next) => {
-  if (!req.session.access_token) {
-    return res.status(401).send('Access token is missing');
-  }
-
-  const url = 'https://api.spotify.com/v1/me/player';
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.session.access_token}`
+const fetchCurrentlyPlaying = async (req) => {
+  try {
+    if (!req.session.access_token) {
+      throw new Error('Access token is missing');
     }
-  });
 
-  if (!response.ok) {
-    const errorMessage = `Fetch currently playing call failed with status: ${response.status}`;
-    console.error(errorMessage);
-    return res.status(response.status).send(errorMessage);
-  }
+    const url = 'https://api.spotify.com/v1/me/player';
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${req.session.access_token}`
+      }
+    });
 
-  if (response.status === 204) {
-    return res.status(response.status).send('No track currently playing');
-  }
+    // Spotify API returns 204 if no track playing.
+    if (response.status === 204) {
+      throw new Error('No track currently playing');
+    }
 
-  if (response.ok) {
+    if (!response.ok) {
+      throw new Error(`Fetch currently playing [Spotify API] failed with status: ${response.status}`);
+    }
+
     const rawData = await response.json();
 
     const isLocal = rawData.item.is_local;
@@ -39,10 +38,9 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
         duration_ms: rawData.item.duration_ms,
         is_local: rawData.item.is_local,
       };
-      req.currentlyPlaying = data;
+      return data;
     } else {
       const albumData = await fetchAlbumTracks(rawData.item.album.id, req);
-
       const data = {
         track: rawData.item.name,
         artists: rawData.item.artists.map(artist => artist.name),
@@ -54,9 +52,8 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
         album_url: rawData.item.album.external_urls.spotify,
         is_playing: rawData.is_playing,
         progress_ms: rawData.progress_ms,
-        duration_ms: rawData.item.duration_ms, 
+        duration_ms: rawData.item.duration_ms,
         is_local: rawData.item.is_local,
-
         tracks: albumData.items.map(track => ({
           artist_spotify_url: track.artists[0].external_urls.spotify,
           artists: track.artists.map(artist => artist.name),
@@ -67,15 +64,11 @@ const fetchCurrentlyPlaying = async(req, res, next) => {
           preview_url: track.preview_url,
         }))
       };
-
-      req.currentlyPlaying = data;
+      return data;
     }
-    
-    next();
-  } else {
-    const errorData = await response.json();
-    console.error('Failed to fetch currently playing data:', errorData);
-    res.status(response.status).send(errorData);
+  } catch (error) {
+    console.error('Error fetching currently playing data:', error);
+    throw error;
   }
 };
 
