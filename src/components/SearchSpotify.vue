@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import debounce from 'debounce';
 
 // SelectButton
@@ -11,6 +11,13 @@ const showDropdown = ref(false);
 const query = ref('');
 const searchResults = ref(null);
 const isLoading = ref(true);
+const isLoggedIn = ref(false);
+
+onMounted(async () => {
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
+  const data = await response.json();
+  isLoggedIn.value = data.isLoggedIn;
+});
 
 const emit =  defineEmits(['updateTags']);
 
@@ -24,11 +31,19 @@ const fetchSearch = async() => {
   }
 
   try {
-    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search?query=${query.value?.toLowerCase()}&type=${value.value?.toLowerCase().slice(0, -1)}`;
+    let url;
+    const sanitizedQuery = encodeURIComponent(query.value?.toLowerCase());
+    if (isLoggedIn.value) {
+      url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search?query=${sanitizedQuery}&type=${value.value?.toLowerCase().slice(0, -1)}`;
+    } else {
+      url = `${import.meta.env.VITE_API_BASE_URL}/public-search?query=${sanitizedQuery}&type=${value.value?.toLowerCase().slice(0, -1)}`;
+    }
+
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
+
     const data = await response.json();
     searchResults.value = data;
   } catch (error) {

@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
-import getAccessToken from "../utils/spotifyServicePublic";
+import { getAccessToken } from '../utils/spotifyServicePublic.js';
 
-const fetchPlaylistTracks = async (playlistId) => {
+const publicFetchPlaylistTracks = async (playlistId) => {
   try {
     const token = await getAccessToken();
 
@@ -23,4 +23,4 @@ const fetchPlaylistTracks = async (playlistId) => {
   }
 };
 
-export default fetchPlaylistTracks;
+export default publicFetchPlaylistTracks;

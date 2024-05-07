@@ -1,13 +1,13 @@
-import './assets/main.css'
+import './assets/main.css';
 import 'primeicons/primeicons.css';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { createWebHistory, createRouter } from 'vue-router'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createWebHistory, createRouter } from 'vue-router';
+import App from './App.vue';
 
-import PrimeVue from 'primevue/config'
-import 'primevue/resources/themes/aura-dark-green/theme.css'
+import PrimeVue from 'primevue/config';
+import 'primevue/resources/themes/aura-dark-green/theme.css';
 
 import Button from 'primevue/button';
 import Skeleton from 'primevue/skeleton';
@@ -24,8 +24,8 @@ import TabPanel from 'primevue/tabpanel';
 import ProgressSpinner from 'primevue/progressspinner';
 import Tooltip from 'primevue/tooltip';
 
-import HomeView from './views/HomeView.vue'
-import AboutView from './views/AboutView.vue'
+import HomeView from './views/HomeView.vue';
+import AboutView from './views/AboutView.vue';
 import CurrentlyPlayingView from './views/CurrentlyPlayingView.vue';
 import RecommendationView from './views/RecommendationView.vue';
 import MostPlayedView from './views/MostPlayedView.vue';
@@ -36,7 +36,7 @@ const routes = [
   { path: '/currently-playing', component: CurrentlyPlayingView },
   { path: '/recommendation', component: RecommendationView },
   { path: '/most-played', component: MostPlayedView },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
@@ -65,5 +65,43 @@ app.component('TabPanel', TabPanel);
 app.component('ProgressSpinner', ProgressSpinner);
 
 app.directive('tooltip', Tooltip);
+
+const decrementUser = async() => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/decrement-user`, {
+      method: 'POST',
+    }); 
+  } catch (error) {
+    console.error('Error decrementing user:', error);
+  }
+};
+
+const incrementUser = async() => {
+  try {
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/increment-user`, {
+      method: 'POST',
+    });
+  } catch (error) {
+    console.error('Error incrementing user:', error);
+  }
+};
+
+window.addEventListener('load', async() => {
+  incrementUser();
+});
+
+let isUnloading = false;
+window.addEventListener('beforeunload', () => {
+  isUnloading = true;
+  decrementUser();
+});
+
+document.onvisibilitychange = () => {
+  if (document.visibilityState === 'visible') {
+    incrementUser();
+  } else if (document.visibilityState === 'hidden' && !isUnloading) {
+    decrementUser();
+  }
+};
 
 app.mount('#app');

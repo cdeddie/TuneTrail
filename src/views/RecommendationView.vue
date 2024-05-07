@@ -55,7 +55,12 @@ const fetchRecommendations = async () => {
     const limit = 25; // TODO implement client manipulation
     const seedType = tagObject.value[0]?.type;
 
-    const url = `${import.meta.env.VITE_API_BASE_URL}/spotify/recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
+    let url;
+    if (isLoggedIn.value) {
+      url = `${import.meta.env.VITE_API_BASE_URL}/spotify/recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
+    } else {
+      url = `${import.meta.env.VITE_API_BASE_URL}/public-recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
+    }
 
     const response = await fetch(url, { credentials: 'include' });
 
@@ -84,13 +89,9 @@ watch(recObject, debounce(fetchRecommendations, 500));
 
 <template>
   <div><span class="title gradient-text">Discover Songs</span></div>
-  <div v-if="!isLoggedIn">
-    <RequiresLogin :loginMessage="'find recommendations'" />
-    <!-- style="display: flex; flex-direction: column; align-items: center; margin-left: auto; margin-right: auto; -->
-  </div>
+
 
   <!-- Else if user is logged in: -->
-  <div v-else> 
     <div v-if="!viewStore.isMobile" class="desktop-view">
       <div class="left-container">
         <SearchSpotify @updateTags="handleTags"/>
@@ -138,7 +139,6 @@ watch(recObject, debounce(fetchRecommendations, 500));
         </a>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped> 
