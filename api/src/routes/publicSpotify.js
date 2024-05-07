@@ -8,7 +8,7 @@ const router = express.Router();
 let currentUsers = 0;
 let limit = 180; // 180 is the approximate spotify API limit every 60s
 
-router.post('/increment-user', (req, res) => {
+router.post('/increment-user', async(req, res) => {
   currentUsers++;
   limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
   req.app.locals.limit = limit;
@@ -16,7 +16,7 @@ router.post('/increment-user', (req, res) => {
   res.sendStatus(200);
 });
 
-router.post('/decrement-user', (req, res) => {
+router.post('/decrement-user', async(req, res) => {
   currentUsers--;
   limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
   req.app.locals.limit = limit;
@@ -51,8 +51,8 @@ router.get('/playlist/:playlistId', async (req, res) => {
   }
 });
 
-router.get('/user-limit', (req, res) => {
-  res.status(200).json(limit);
+router.get('/user-limit', async(req, res) => {
+  res.status(200).json(req.app.locals.limit);
 });
 
 export { currentUsers, router }

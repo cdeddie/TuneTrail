@@ -10,9 +10,7 @@ import { router as publicRoutes } from './routes/publicSpotify.js'
 
 const app = express();
 
-app.set('trust proxy', 1);
-// temporary to check express-rate-limit proxy issue
-app.get('/ip', (request, response) => response.send(request.ip));
+app.set('trust proxy', 1); // Trust the first proxy, need this for rate limiter
 
 app.use(express.json());
 
@@ -33,8 +31,9 @@ app.use(cookieparser());
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: (req, res) => {
-    return req.app.locals.limit;
+    return req.app.locals.limit || 180;
   },
+  standardHeaders: true,
   message: 'Too many requests, try again later'
 });
 

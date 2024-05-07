@@ -14,6 +14,7 @@ const tagObject = ref([]);
 const responseData = ref(null);
 const isLoading = ref(false);
 const isLoggedIn = ref(false);
+const userLimit = ref(null);
 
 const handleRecs = (values) => {
   recObject.value = values;
@@ -27,6 +28,7 @@ onMounted(async () => {
   const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
+  userLimit.value = await fetchUserLimit();
 });
 
 // Here I'm filtering the data on the client side instead of the server side. Probably should have done this throughout the project
@@ -62,6 +64,10 @@ const fetchRecommendations = async () => {
       url = `${import.meta.env.VITE_API_BASE_URL}/public-recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
     }
 
+    if (!isLoggedIn.value) {
+      userLimit.value = await fetchUserLimit();
+    }
+
     const response = await fetch(url, { credentials: 'include' });
 
     if (!response.ok) {
@@ -76,6 +82,17 @@ const fetchRecommendations = async () => {
   }
 };
 
+const fetchUserLimit = async () => {
+  try {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/user-limit`;
+    console.log(url);
+    const response = await fetch(url, { credentials: 'include' });
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching rate limit', error);
+  }
+}
+
 watch([tagObject], ([newValTag]) => {
   if (newValTag.length === 0) {
     responseData.value = null;
@@ -85,41 +102,18 @@ watch([tagObject], ([newValTag]) => {
 
 watch(recObject, debounce(fetchRecommendations, 500));
 // Don't forget weird thing with thinking tags still exist after deleting the tags
+
+const redirectToLogin = () => {
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login`;
+};
 </script>
 
 <template>
   <div><span class="title gradient-text">Discover Songs</span></div>
 
-
-  <!-- Else if user is logged in: -->
-    <div v-if="!viewStore.isMobile" class="desktop-view">
-      <div class="left-container">
-        <SearchSpotify @updateTags="handleTags"/>
-        <div class="result-container">
-          <a 
-            class="tag-container" 
-            v-for="(track) in filteredData" 
-            :key="track.externalUrl"
-            :href="track.externalUrl"
-            target="_blank"
-          >
-            <div class="image-container">
-              <img class="tag-image" :src="track.imageUrl"></img>
-              <i class="fa fa-play play-icon" aria-hidden="true"></i>
-              </div> 
-            <div class="track-info">
-              <div class="track-title">{{ track.name }}</div>
-              <div class="track-subtitle">{{ track.artistNames }}</div>
-            </div>
-          </a>
-        </div>
-      </div>
-      <Recommendation @updateValues="handleRecs" />
-    </div>
-    <!-- If mobile screen -->
-    <div v-else class="mobile-view">
+  <div v-if="!viewStore.isMobile" class="desktop-view">
+    <div class="left-container">
       <SearchSpotify @updateTags="handleTags"/>
-      <Recommendation @updateValues="handleRecs" />
       <div class="result-container">
         <a 
           class="tag-container" 
@@ -131,7 +125,7 @@ watch(recObject, debounce(fetchRecommendations, 500));
           <div class="image-container">
             <img class="tag-image" :src="track.imageUrl"></img>
             <i class="fa fa-play play-icon" aria-hidden="true"></i>
-          </div> 
+            </div> 
           <div class="track-info">
             <div class="track-title">{{ track.name }}</div>
             <div class="track-subtitle">{{ track.artistNames }}</div>
@@ -139,6 +133,53 @@ watch(recObject, debounce(fetchRecommendations, 500));
         </a>
       </div>
     </div>
+    <div class="right-container">
+      <div class="login-container" v-if="!isLoggedIn">
+        <div class="button-container">
+          <span class="login-exp">To ensure the best experience:</span>
+          <Button class="login-button" @click="redirectToLogin" rounded>
+          <b><i class="fa fa-spotify"></i> Log In</b>
+        </Button>
+        </div>
+        <hr>
+        <span>You have around <span style="font-weight: bold;">{{ userLimit }}</span> API calls for the next 60s. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
+      </div>
+      <Recommendation @updateValues="handleRecs" />
+    </div>
+  </div>
+  <!-- If mobile screen -->
+  <div v-else class="mobile-view">
+    <SearchSpotify @updateTags="handleTags"/>
+    <div class="login-container" v-if="!isLoggedIn">
+        <div class="button-container">
+          <span class="login-exp">To ensure the best experience:</span>
+          <Button class="login-button" @click="redirectToLogin" rounded>
+          <b><i class="fa fa-spotify"></i> Log In</b>
+        </Button>
+        </div>
+        <hr>
+        <span>You have around <span style="font-weight: bold;">{{ userLimit }}</span> API calls for the next 60s. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
+      </div>
+    <Recommendation @updateValues="handleRecs" />
+    <div class="result-container">
+      <a 
+        class="tag-container" 
+        v-for="(track) in filteredData" 
+        :key="track.externalUrl"
+        :href="track.externalUrl"
+        target="_blank"
+      >
+        <div class="image-container">
+          <img class="tag-image" :src="track.imageUrl"></img>
+          <i class="fa fa-play play-icon" aria-hidden="true"></i>
+        </div> 
+        <div class="track-info">
+          <div class="track-title">{{ track.name }}</div>
+          <div class="track-subtitle">{{ track.artistNames }}</div>
+        </div>
+      </a>
+    </div>
+  </div>
 </template>
 
 <style scoped> 
@@ -152,6 +193,55 @@ watch(recObject, debounce(fetchRecommendations, 500));
 
 .left-container {
   min-width: 80%;
+}
+
+.right-container {
+  font-family: 'Circular', var(--font-family);
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container {
+  background-color: #282c34;
+  box-shadow: -2px 6px 6px #7374734f;
+  margin-left: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 15px 20px;
+  border-radius: 16px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.login-container span {
+  flex: 1;
+}
+
+.login-container hr {
+  border: 1px solid var(--primary-color); 
+  width: 100%;
+  margin: 15px 0;
+}
+
+.login-container .login-button {
+  margin: auto;
+  max-height: 90%;
+}
+
+.mobile-view .login-container {
+  width: 95vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+}
+
+.mobile-view hr {
+  margin: 5px 0;
 }
 
 .title {
@@ -230,10 +320,35 @@ a:hover {
   background-color: var(--surface-100);
 }
 
+@media (max-width: 1450px) {
+  .desktop-view {
+    margin-left: 1vw;
+    margin-right: 5vw;
+  }
+
+  .right-container {
+    max-width: 35%;
+  }
+}
+
 @media (max-width: 1040px) {
   .desktop-view {
     margin-left: 2vw;
     margin-right: 3vw;
+  }
+
+  .login-container {
+    width: 25vw;
+    font-size: .8rem;
+  }
+
+  .login-exp {
+    display: none;
+  }
+
+  .login-button {
+    background-color: black;
+    color: white;
   }
 }
 

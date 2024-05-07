@@ -68,11 +68,12 @@ const toggleFilters = () => {
 .recommendation-container {
   font-family: 'Circular', var(--font-family);
   width: 350px;
+  max-width: 450px;
   height: fit-content;
   margin-left: 1rem;
   background-color: #282c34;
   border-radius: 16px;
-  box-shadow: 0 8px 16px #7374734f;
+  box-shadow: -2px 6px 6px #7374734f;
   position: relative;
 }
 
