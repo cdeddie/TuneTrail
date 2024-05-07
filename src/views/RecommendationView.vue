@@ -85,7 +85,6 @@ const fetchRecommendations = async () => {
 const fetchUserLimit = async () => {
   try {
     const url = `${import.meta.env.VITE_API_BASE_URL}/user-limit`;
-    console.log(url);
     const response = await fetch(url, { credentials: 'include' });
     return response.json();
   } catch (error) {
@@ -109,6 +108,7 @@ const redirectToLogin = () => {
 </script>
 
 <template>
+<div class="recommendation-view">
   <div><span class="title gradient-text">Discover Songs</span></div>
 
   <div v-if="!viewStore.isMobile" class="desktop-view">
@@ -180,9 +180,15 @@ const redirectToLogin = () => {
       </a>
     </div>
   </div>
+</div>
 </template>
 
-<style scoped> 
+<style scoped>
+.recommendation-view {
+  max-width: 99vw;
+  overflow: hidden;
+} 
+
 .desktop-view {
   margin-left: 15vh;
   margin-right: 15vh;
@@ -192,13 +198,14 @@ const redirectToLogin = () => {
 }
 
 .left-container {
-  min-width: 80%;
+  width: 75%;
 }
 
 .right-container {
   font-family: 'Circular', var(--font-family);
   display: flex;
   flex-direction: column;
+  width: 25%;
 }
 
 .login-container {
@@ -211,11 +218,17 @@ const redirectToLogin = () => {
   font-size: 1rem;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .button-container {
   display: flex;
   flex-direction: row;
+}
+
+.login-exp {
+  display: flex;
+  align-items: center;
 }
 
 .login-container span {
@@ -322,12 +335,18 @@ a:hover {
 
 @media (max-width: 1450px) {
   .desktop-view {
-    margin-left: 1vw;
-    margin-right: 5vw;
+    margin-left: 4vw;
+    margin-right: 4vw;
   }
 
   .right-container {
     max-width: 35%;
+  }
+}
+
+@media (max-width: 1300px) {
+  .login-exp {
+    display: none;
   }
 }
 
@@ -342,13 +361,16 @@ a:hover {
     font-size: .8rem;
   }
 
-  .login-exp {
-    display: none;
-  }
-
   .login-button {
     background-color: black;
     color: white;
+  }
+}
+
+@media (max-width: 800px) {
+  .desktop-view {
+    margin-left: 2vw;
+    margin-right: 4.5vw;
   }
 }
 

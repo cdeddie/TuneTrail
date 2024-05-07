@@ -52,7 +52,7 @@ const toggleFilters = () => {
       </div>
     </div>
 
-    <div v-else style="height: fit-content; padding-bottom: 20px;">
+    <div v-else style="height: fit-content; padding-bottom: 25px;">
       <div v-for="slider in sliders" :key="slider.name" class="slider-container">
         <span class="slider-label">
           {{ slider.name.charAt(0).toUpperCase() + slider.name.slice(1) }}:
@@ -67,8 +67,7 @@ const toggleFilters = () => {
 <style scoped>
 .recommendation-container {
   font-family: 'Circular', var(--font-family);
-  width: 350px;
-  max-width: 450px;
+  width: 100%;
   height: fit-content;
   margin-left: 1rem;
   background-color: #282c34;
