@@ -12,7 +12,7 @@ router.post('/increment-user', async(req, res) => {
   currentUsers++;
   limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
   req.app.locals.limit = limit;
-  console.log(`New user joined. Current users: ${currentUsers}`);
+  console.log(`New user [ip: ${req.ip}] joined. Current users: ${currentUsers}`);
   res.sendStatus(200);
 });
 
@@ -20,7 +20,7 @@ router.post('/decrement-user', async(req, res) => {
   currentUsers--;
   limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
   req.app.locals.limit = limit;
-  console.log(`User left. Current users: ${currentUsers}`);
+  console.log(`User left [ip: ${req.ip}]. Current users: ${currentUsers}`);
   res.sendStatus(200);
 });
 
