@@ -66,42 +66,4 @@ app.component('ProgressSpinner', ProgressSpinner);
 
 app.directive('tooltip', Tooltip);
 
-const decrementUser = async() => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/decrement-user`, {
-      method: 'POST',
-    }); 
-  } catch (error) {
-    console.error('Error decrementing user:', error);
-  }
-};
-
-const incrementUser = async() => {
-  try {
-    await fetch(`${import.meta.env.VITE_API_BASE_URL}/increment-user`, {
-      method: 'POST',
-    });
-  } catch (error) {
-    console.error('Error incrementing user:', error);
-  }
-};
-
-window.addEventListener('load', async() => {
-  incrementUser();
-});
-
-let isUnloading = false;
-window.addEventListener('beforeunload', () => {
-  isUnloading = true;
-  decrementUser();
-});
-
-document.onvisibilitychange = () => {
-  if (document.visibilityState === 'visible') {
-    incrementUser();
-  } else if (document.visibilityState === 'hidden' && !isUnloading) {
-    decrementUser();
-  }
-};
-
 app.mount('#app');

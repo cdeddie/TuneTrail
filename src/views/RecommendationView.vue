@@ -2,6 +2,7 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useViewStore } from '../stores/ViewStore.js';
 import debounce from 'debounce';
+import { useToast } from 'primevue/usetoast';
 import Recommendation from '../components/Recommendation.vue';
 import SearchSpotify from '../components/SearchSpotify.vue';
 import RequiresLogin from '../components/RequiresLogin.vue';
@@ -14,7 +15,8 @@ const tagObject = ref([]);
 const responseData = ref(null);
 const isLoading = ref(false);
 const isLoggedIn = ref(false);
-const userLimit = ref(null);
+const rateLimited = ref(false);
+const toast = useToast();
 
 const handleRecs = (values) => {
   recObject.value = values;
@@ -28,7 +30,6 @@ onMounted(async () => {
   const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/status`, { credentials: 'include' });
   const data = await response.json();
   isLoggedIn.value = data.isLoggedIn;
-  userLimit.value = await fetchUserLimit();
 });
 
 // Here I'm filtering the data on the client side instead of the server side. Probably should have done this throughout the project
@@ -45,6 +46,19 @@ const filteredData = computed(() => {
   
   return [];
 });
+
+const handleTimeout = () => {
+  rateLimited.value = true;
+  toast.add({ 
+    severity: 'error', 
+    summary: 'Slow down!', 
+    detail: 'You\'re searching for too many recommendations in a short amount of time! Wait 60 seconds and try again.' 
+  });
+
+  setTimeout(() => {
+    rateLimited.value = false;
+  }, 60000);
+};
 
 const fetchRecommendations = async () => {
   isLoading.value = true;
@@ -64,11 +78,11 @@ const fetchRecommendations = async () => {
       url = `${import.meta.env.VITE_API_BASE_URL}/public-recommendations?limit=${limit}&tags=${tags}&recTargets=${recTargets}&seedType=${seedType}`;
     }
 
-    if (!isLoggedIn.value) {
-      userLimit.value = await fetchUserLimit();
-    }
-
     const response = await fetch(url, { credentials: 'include' });
+
+    if (response.status === 429) {
+      handleTimeout();
+    }
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -81,16 +95,6 @@ const fetchRecommendations = async () => {
     isLoading.value = false;
   }
 };
-
-const fetchUserLimit = async () => {
-  try {
-    const url = `${import.meta.env.VITE_API_BASE_URL}/user-limit`;
-    const response = await fetch(url, { credentials: 'include' });
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching rate limit', error);
-  }
-}
 
 watch([tagObject], ([newValTag]) => {
   if (newValTag.length === 0) {
@@ -108,12 +112,13 @@ const redirectToLogin = () => {
 </script>
 
 <template>
+<Toast />
 <div class="recommendation-view">
   <div><span class="title gradient-text">Discover Songs</span></div>
 
   <div v-if="!viewStore.isMobile" class="desktop-view">
     <div class="left-container">
-      <SearchSpotify @updateTags="handleTags"/>
+      <SearchSpotify @updateTags="handleTags" @update:rateLimited="handleTimeout" v-model:rate-limited="rateLimited" />
       <div class="result-container">
         <a 
           class="tag-container" 
@@ -142,14 +147,14 @@ const redirectToLogin = () => {
         </Button>
         </div>
         <hr>
-        <span>You have around <span style="font-weight: bold;">{{ userLimit }}</span> API calls for the next 60s. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
+        <span>You have a limited amount of API calls on a 60s basis. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
       </div>
-      <Recommendation @updateValues="handleRecs" />
+      <Recommendation @updateValues="handleRecs" :rateLimited="rateLimited" />
     </div>
   </div>
   <!-- If mobile screen -->
   <div v-else class="mobile-view">
-    <SearchSpotify @updateTags="handleTags"/>
+    <SearchSpotify @updateTags="handleTags" @update:rateLimited="handleTimeout" v-model:rate-limited="rateLimited" />
     <div class="login-container" v-if="!isLoggedIn">
         <div class="button-container">
           <span class="login-exp">To ensure the best experience:</span>
@@ -158,9 +163,9 @@ const redirectToLogin = () => {
         </Button>
         </div>
         <hr>
-        <span>You have around <span style="font-weight: bold;">{{ userLimit }}</span> API calls for the next 60s. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
+        <span>You have a limited amount of API calls on a 60s basis. Each search/recommendation uses one. Login to use your own Spotify API key.</span>
       </div>
-    <Recommendation @updateValues="handleRecs" />
+    <Recommendation @updateValues="handleRecs" :rateLimited="rateLimited" />
     <div class="result-container">
       <a 
         class="tag-container" 

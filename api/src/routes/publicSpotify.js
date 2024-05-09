@@ -2,29 +2,11 @@ import express from 'express';
 import publicFetchPlaylistTracks from '../services/publicFetchPlaylistTracks.js';
 import publicFetchSearch from '../services/publicFetchSearch.js';
 import publicFetchRecommendations from '../services/publicFetchRecommendations.js';
+import { shortLimiter, longLimiter } from '../middleware/publicRateLimiter.js';
 
 const router = express.Router();
 
-let currentUsers = 0;
-let limit = 180; // 180 is the approximate spotify API limit every 60s
-
-router.post('/increment-user', async(req, res) => {
-  currentUsers++;
-  limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
-  req.app.locals.limit = limit;
-  console.log(`New user [ip: ${req.ip}] joined. Current users: ${currentUsers}`);
-  res.sendStatus(200);
-});
-
-router.post('/decrement-user', async(req, res) => {
-  currentUsers--;
-  limit = currentUsers > 0 ? Math.floor(180 / currentUsers) : 180;
-  req.app.locals.limit = limit;
-  console.log(`User left [ip: ${req.ip}]. Current users: ${currentUsers}`);
-  res.sendStatus(200);
-});
-
-router.get('/public-search', async(req, res) => {
+router.get('/public-search', shortLimiter, longLimiter, async(req, res) => {
   try {
     const response = await publicFetchSearch(req);
     res.json(response);
@@ -33,7 +15,7 @@ router.get('/public-search', async(req, res) => {
   }
 });
 
-router.get('/public-recommendations', async(req, res) => {
+router.get('/public-recommendations', shortLimiter, longLimiter, async(req, res) => {
   try {
     const response = await publicFetchRecommendations(req);
     res.json(response);
@@ -55,4 +37,4 @@ router.get('/user-limit', async(req, res) => {
   res.status(200).json(req.app.locals.limit);
 });
 
-export { currentUsers, router }
+export { router }

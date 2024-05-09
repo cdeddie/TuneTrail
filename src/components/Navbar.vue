@@ -30,7 +30,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <nav v-if="!viewStore.isMobile" class="desktop-nav">
+  <nav v-if="viewStore.screenWidth > 770" class="desktop-nav">
     <ul>
       <li><RouterLink to="/">Home</RouterLink></li>
       <li><RouterLink to="/currently-playing">Currently Playing</RouterLink></li>

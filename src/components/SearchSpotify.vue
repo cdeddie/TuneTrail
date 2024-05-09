@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import debounce from 'debounce';
 
 // SelectButton
@@ -19,11 +19,40 @@ onMounted(async () => {
   isLoggedIn.value = data.isLoggedIn;
 });
 
-const emit =  defineEmits(['updateTags']);
+const props = defineProps({
+  rateLimited: {
+    type: Boolean,
+    default: false,
+    required: true
+  }
+});
+
+const rateLimited = ref(props.rateLimited);
+
+const emit = defineEmits(['updateTags', 'update:rateLimited']);
+
+// Watching
+watch(rateLimited, (newValue) => {
+  emit('update:rateLimited', newValue);
+});
+
+watch(() => props.rateLimited, (newValue) => {
+  rateLimited.value = newValue;
+});
 
 watch(tags, () => {
   emit('updateTags', tags.value);
 }, { deep: true });
+
+const handleTimeout = () => {
+  rateLimited.value = true;
+
+  setTimeout(() => {
+    rateLimited.value = false;
+  }, 60000);
+};
+
+
 
 const fetchSearch = async() => {
   if (query.value.trim().length === 0) {
@@ -40,6 +69,12 @@ const fetchSearch = async() => {
     }
 
     const response = await fetch(url, { credentials: 'include' });
+
+    if (response.status === 429) {
+      emit('rateLimited');
+      handleTimeout();
+    }
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -60,6 +95,7 @@ const handleBlur = () => {
 };
 
 const addTag = (tag) => {
+  // If the tag being added already exists return
   if (tags.value.some((t) => t.id === tag.id)) {
     return;
   }
@@ -96,14 +132,15 @@ watch(value, () => {
       <input 
         class="input-bar" 
         v-model="query" 
-        :placeholder="tags.length >= 5 
-          ? `Maximum number of ${value?.toLowerCase()} reached` 
-          : `Search by ${value?.toLowerCase().slice(0, -1)}...`" 
+        :placeholder="rateLimited ? 'Try again soon' : 
+                      tags.length >= 5 ? 
+                      `Maximum number of ${value?.toLowerCase()} reached` : 
+                      `Add up to 5 ${value?.toLowerCase().slice(0, -1)}s...`"
         type="text" 
         @keyup.enter="fetchSearch" 
         @focus="showDropdown = true" 
         @blur="handleBlur"
-        :disabled="tags.length >= 5"
+        :disabled="tags.length >= 5 || rateLimited"
       >
       <SelectButton v-model="value" :options="options" :allowEmpty="false"/>
     </div>
@@ -129,7 +166,7 @@ watch(value, () => {
       <div v-for="(tag) in tags" :key="tag.id" class="tag-container">
         <img v-if="tag.image" :src="tag.image">
         <span class="gradient-text">{{ tag.name }}</span>
-        <i class="fa fa-times-circle remove-tag" aria-hidden="true" @click="removeTag(tag)"></i>
+        <i class="fa fa-times-circle remove-tag" aria-hidden="true" @click="removeTag(tag)" v-if="!rateLimited"></i>
       </div>
     </div>
   </div>

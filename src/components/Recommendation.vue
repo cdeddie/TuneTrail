@@ -17,6 +17,14 @@ const sliders = ref([
   { name: 'valence', value: 0 },
 ]);
 
+const props = defineProps({
+  rateLimited: {
+    type: Boolean,
+    default: false,
+    required: true
+  }
+});
+
 const emit = defineEmits(['updateValues']);
 
 // We're looking into this very strongly
@@ -48,7 +56,7 @@ const toggleFilters = () => {
           {{ slider.name.charAt(0).toUpperCase() + slider.name.slice(1) }}:
           <span class="slider-value">{{ slider.value }}</span>
         </span>
-        <Slider v-model="slider.value" />
+        <Slider v-model="slider.value" :disabled="rateLimited"/>
       </div>
     </div>
 
@@ -58,7 +66,7 @@ const toggleFilters = () => {
           {{ slider.name.charAt(0).toUpperCase() + slider.name.slice(1) }}:
           <span class="slider-value">{{ slider.value }}</span>
         </span>
-        <Slider v-model="slider.value" />
+        <Slider v-model="slider.value" :disabled="rateLimited"/>
       </div>
     </div>
   </div>
@@ -136,7 +144,7 @@ const toggleFilters = () => {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .recommendation-container {
     width: 95vw;
     margin-left: auto;
