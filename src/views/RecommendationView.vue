@@ -215,7 +215,7 @@ const redirectToLogin = () => {
 
 .login-container {
   background-color: #282c34;
-  box-shadow: -2px 6px 6px #7374734f;
+  box-shadow: 0 0 10px rgba(83, 83, 83, 0.5);
   margin-left: 1rem;
   margin-bottom: 1.5rem;
   padding: 15px 20px;

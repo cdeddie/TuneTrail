@@ -76,11 +76,11 @@ const toggleFilters = () => {
 .recommendation-container {
   font-family: 'Circular', var(--font-family);
   width: 100%;
-  height: fit-content;
   margin-left: 1rem;
+  margin-bottom: 1rem;
   background-color: #282c34;
   border-radius: 16px;
-  box-shadow: -2px 6px 6px #7374734f;
+  box-shadow: 0 0 10px rgba(83, 83, 83, 0.5);
   position: relative;
 }
 
@@ -122,6 +122,7 @@ const toggleFilters = () => {
 .slider-value {
   font-weight: bold;
   background: linear-gradient(to right, var(--primary-color) , #2BC4E9);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
